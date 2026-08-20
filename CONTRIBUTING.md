@@ -41,7 +41,8 @@ The banner uses the wordmark WITHOUT the mark, deliberately: the mark in `REA-lo
 gradient, so on a crimson banner it renders as an invisible sliver. The mark carries the icon instead. If the
 branding changes, regenerate rather than editing pixels.
 
-If the repository stays **private**, authorise the `online-odoo` user on it so Odoo's builder can read it.
+The repository is **public**, so Odoo's builder can read it with no extra authorisation. If it is ever made
+private again, authorise the `online-odoo` user on it.
 
 ## Porting to another Odoo version
 
