@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!--
+    A top-level entry in Odoo's app grid.
+
+    The module started as a settings block with no menu, which is the ordinary Odoo idiom for a connector —
+    but it made the app invisible: somebody who installed it had no way to find it except by knowing to look
+    under Settings. An integration people are told to install should be somewhere they can see.
+
+    The action deliberately opens Odoo's OWN settings screen scrolled to this module's block, rather than a
+    second screen of our own. `target: inline` plus `context: {'module': ...}` is exactly how Odoo's built-in
+    settings shortcuts work, so the connection is configured in one place whichever route you arrive by.
+  -->
+  <record id="action_reax_settings" model="ir.actions.act_window">
+    <field name="name">RealEstateApp</field>
+    <field name="res_model">res.config.settings</field>
+    <field name="view_mode">form</field>
+    <field name="target">inline</field>
+    <field name="context">{'module': 'realestateapp_connector'}</field>
+  </record>
+
+  <!-- web_icon points at the same icon.png the Apps Store listing uses, so the grid tile and the store
+       tile are the one image rather than two that drift apart. -->
+  <menuitem id="menu_reax_root"
+            name="RealEstateApp"
+            web_icon="realestateapp_connector,static/description/icon.png"
+            sequence="95"/>
+
+  <menuitem id="menu_reax_connection"
+            name="Connection"
+            parent="menu_reax_root"
+            action="action_reax_settings"
+            sequence="10"
+            groups="base.group_system"/>
+</odoo>

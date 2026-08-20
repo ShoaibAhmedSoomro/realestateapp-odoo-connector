@@ -15,7 +15,7 @@ values across two browser tabs. This app already knows all of them, because it r
 How it works
 ------------
 1. In RealEstateApp, open Connectors and press *Connect with the Odoo app*. You get a short code.
-2. In Odoo, open *Settings → RealEstateApp*, paste the code, and press *Connect*.
+2. In Odoo, open the *RealEstateApp* app (or *Settings → RealEstateApp*), paste the code, and press *Connect*.
 
 That is the whole setup. The app creates its own API key, works out which of your apps it can read, and
 tells RealEstateApp where to find you. Nothing is stored anywhere until your Odoo has proved the key works.
@@ -36,15 +36,18 @@ access immediately.
     # Free, and licensed so it stays free. LGPL-3 is the Odoo community licence for a connector like this;
     # OPL-1 would make it a paid Enterprise-style app, which is not what this is.
     'license': 'LGPL-3',
-    'depends': ['base_setup', 'contacts'],
+    # 'web' is only listed because menus.xml sets web_icon, a field the web module adds to ir.ui.menu.
+    # It arrives transitively anyway, but an app in a store should not depend on that being true.
+    'depends': ['base_setup', 'contacts', 'web'],
     'data': [
         'views/res_config_settings_views.xml',
+        'views/menus.xml',
     ],
     # The cover image apps.odoo.com shows on the listing. Both this and static/description/icon.png are
     # rendered from the app's own brand files (public/brand/REA-appicon.svg and REA-logo-white.svg) in the
     # RealEstateApp repo, in the palette from its global.css — crimson #e11d48, accent #e81a47, indigo #1d0e7f.
     'images': ['static/description/banner.png'],
     'installable': True,
-    'application': False,
+    'application': True,
     'auto_install': False,
 }
