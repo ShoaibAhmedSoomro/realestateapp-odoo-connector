@@ -1,0 +1,77 @@
+<section style="font-family:-apple-system,'Segoe UI',Roboto,sans-serif;color:#1f2933;line-height:1.6">
+
+  <div style="padding:36px 32px;background:#f6f7f8;border-radius:10px;margin-bottom:28px">
+    <h1 style="margin:0 0 10px;font-size:30px;font-weight:700;color:#14181d">RealEstateApp Connector</h1>
+    <p style="margin:0;font-size:17px;color:#43505c">
+      Bring your Odoo contacts and CRM leads into RealEstateApp. Connect in one click — no database name to
+      look up, no API key to copy.
+    </p>
+    <p style="margin:14px 0 0;font-size:14px;color:#6d7c88">Free &middot; LGPL-3 &middot; Odoo 18.0</p>
+  </div>
+
+  <h2 style="font-size:21px;font-weight:700;margin:0 0 10px">Connecting used to take four values and two tabs</h2>
+  <p style="margin:0 0 16px">
+    Setting up an integration by hand means finding your <strong>web address</strong>, your
+    <strong>database name</strong>, the <strong>login</strong> to connect as, and an <strong>API key</strong> —
+    then copying them into another application without typing any of them wrongly. Two of those are genuinely
+    hard: the database name is not shown anywhere in the Odoo interface, and the API key needs a password
+    confirmation and is displayed only once.
+  </p>
+  <p style="margin:0 0 24px">
+    This app runs inside your Odoo, so it already knows all four. You paste one short code and press Connect.
+  </p>
+
+  <h2 style="font-size:21px;font-weight:700;margin:0 0 10px">How it works</h2>
+  <ol style="margin:0 0 24px;padding-left:22px">
+    <li style="margin-bottom:8px">In RealEstateApp, open <strong>Connectors &rarr; Odoo</strong> and press
+      <strong>Get a pairing code</strong>.</li>
+    <li style="margin-bottom:8px">In Odoo, open <strong>Settings &rarr; RealEstateApp</strong>, paste the code,
+      and press <strong>Connect</strong>.</li>
+  </ol>
+  <p style="margin:0 0 24px">
+    That is the whole setup. The app generates its own API key, works out which of your apps it can read, and
+    tells RealEstateApp where to find you.
+  </p>
+
+  <h2 style="font-size:21px;font-weight:700;margin:0 0 10px">What it reads</h2>
+  <table style="width:100%;border-collapse:collapse;margin-bottom:24px;font-size:15px">
+    <tr style="background:#f6f7f8">
+      <td style="padding:10px 12px;border:1px solid #d9dee3;font-weight:600;width:32%">Contacts</td>
+      <td style="padding:10px 12px;border:1px solid #d9dee3">
+        Names, emails, phone numbers and job titles from Odoo Contacts.
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px 12px;border:1px solid #d9dee3;font-weight:600">CRM leads</td>
+      <td style="padding:10px 12px;border:1px solid #d9dee3">
+        Opportunities and leads &mdash; offered only if you have the CRM app installed.
+      </td>
+    </tr>
+  </table>
+
+  <h2 style="font-size:21px;font-weight:700;margin:0 0 10px">Your credentials stay yours</h2>
+  <ul style="margin:0 0 24px;padding-left:22px">
+    <li style="margin-bottom:8px"><strong>Your password is never used or sent.</strong> The app generates an
+      API key for the integration instead.</li>
+    <li style="margin-bottom:8px"><strong>Read only.</strong> Nothing is written back into your Odoo.</li>
+    <li style="margin-bottom:8px"><strong>Revoke at any time.</strong> Press Disconnect here, or delete the key
+      under <em>My Profile &rarr; Account Security</em>. Either stops access immediately.</li>
+    <li style="margin-bottom:8px"><strong>Nothing is claimed on trust.</strong> RealEstateApp verifies the key
+      against your own Odoo before it stores anything, so a connection never reports success it has not proved.</li>
+  </ul>
+
+  <h2 style="font-size:21px;font-weight:700;margin:0 0 10px">What it adds to your database</h2>
+  <p style="margin:0 0 24px">
+    Nothing. No new models, no new tables, no new menus &mdash; it is a settings panel and two buttons.
+    Uninstalling leaves only the API key behind, and Disconnect revokes that for you.
+  </p>
+
+  <h2 style="font-size:21px;font-weight:700;margin:0 0 10px">Requirements</h2>
+  <p style="margin:0 0 8px">Odoo 18.0, on <strong>Odoo.sh or your own server</strong>.</p>
+  <p style="margin:0;font-size:14px;color:#6d7c88">
+    Odoo Online (the odoo.com hosted service) does not allow third-party modules to be installed. If that is
+    your hosting, RealEstateApp still connects &mdash; you enter the four values manually on its Connectors
+    screen instead.
+  </p>
+
+</section>

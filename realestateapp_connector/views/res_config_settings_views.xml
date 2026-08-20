@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!--
+    A block in Odoo's own Settings, not a separate app.
+
+    Deliberate: somebody setting up an integration goes to Settings, and a one-field form does not deserve
+    a menu entry of its own. It also means the module adds no menus, no models and no tables — it is a
+    settings panel and a button, which is the smallest thing that can do this job.
+  -->
+  <record id="res_config_settings_view_form" model="ir.ui.view">
+    <field name="name">res.config.settings.view.form.inherit.realestateapp</field>
+    <field name="model">res.config.settings</field>
+    <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//form" position="inside">
+        <app string="RealEstateApp" name="realestateapp_connector"
+             data-string="RealEstateApp">
+
+          <block title="Connection" name="reax_connection">
+            <setting string="Status" help="Whether this Odoo is connected to RealEstateApp.">
+              <div class="content-group mt-2">
+                <div invisible="not reax_connected_at">
+                  <span class="badge text-bg-success">Connected</span>
+                  <span class="text-muted ms-2">
+                    as <field name="reax_account" readonly="1" class="oe_inline"/>
+                    since <field name="reax_connected_at" readonly="1" class="oe_inline"/>
+                  </span>
+                </div>
+                <div invisible="reax_connected_at">
+                  <span class="badge text-bg-secondary">Not connected</span>
+                  <p class="text-muted mt-2 mb-0">
+                    Open <b>Connectors</b> in RealEstateApp, choose Odoo, and press
+                    <b>Connect with the Odoo app</b> to get a pairing code.
+                  </p>
+                </div>
+              </div>
+            </setting>
+
+            <setting string="Pairing code"
+                     help="From Connectors in RealEstateApp. Valid for 30 minutes, and can be used once.">
+              <field name="reax_pairing_code" placeholder="Paste the code here"/>
+              <div class="mt-2">
+                <button name="action_reax_connect" type="object" string="Connect" class="btn-primary"
+                        invisible="reax_connected_at"/>
+                <button name="action_reax_connect" type="object" string="Reconnect" class="btn-secondary"
+                        invisible="not reax_connected_at"/>
+                <button name="action_reax_disconnect" type="object" string="Disconnect" class="btn-link text-danger"
+                        invisible="not reax_connected_at"
+                        confirm="This revokes the API key this app created. RealEstateApp will stop reading this Odoo immediately. Continue?"/>
+              </div>
+            </setting>
+
+            <setting string="RealEstateApp address"
+                     help="Only change this if you were given a different address for RealEstateApp.">
+              <field name="reax_endpoint" placeholder="https://login.realestateapp.ae"/>
+            </setting>
+          </block>
+
+          <block title="What gets shared" name="reax_shares">
+            <setting help="RealEstateApp reads these from Odoo. It never writes back, and it never reads anything else.">
+              <div class="text-muted">
+                <div><i class="fa fa-users me-2" role="img" aria-label="Contacts"/><b>Contacts</b> — names, emails and phone numbers from Odoo Contacts.</div>
+                <div class="mt-1"><i class="fa fa-star me-2" role="img" aria-label="CRM"/><b>CRM leads</b> — only if you have the CRM app installed.</div>
+                <p class="mt-2 mb-0">
+                  Your password is never used or sent. This app creates its own API key, which you can see and
+                  revoke at any time under <b>My Profile → Account Security</b>.
+                </p>
+              </div>
+            </setting>
+          </block>
+        </app>
+      </xpath>
+    </field>
+  </record>
+</odoo>
