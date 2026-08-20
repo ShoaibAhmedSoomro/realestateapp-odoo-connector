@@ -29,11 +29,17 @@ ssh://git@github.com/ShoaibAhmedSoomro/realestateapp-odoo-connector#18.0
 That is why the default branch here is `18.0` rather than `main`. Supporting another Odoo release means another
 branch named for it, not a folder.
 
-Still needed before a listing will look finished, and they need real brand assets rather than placeholders:
+The listing assets are done, and rendered from the app's OWN brand files rather than drawn by hand:
 
-- `realestateapp_connector/static/description/icon.png` — PNG only, 140×140
-- a cover image, referenced from the manifest's `images` key
-- `realestateapp_connector/static/description/index.html` — written, but check the copy reads the way you want
+| File | Source |
+|---|---|
+| `static/description/icon.png` (140×140) | `public/brand/REA-appicon.svg`, rasterised with sharp |
+| `static/description/banner.png` (1200×600) | `REA-logo-white.svg` on crimson `#e11d48` |
+| `static/description/index.html` | palette from `src/styles/global.css` — `#e11d48` / `#e81a47` / `#1d0e7f` |
+
+The banner uses the wordmark WITHOUT the mark, deliberately: the mark in `REA-logo-white.svg` is a crimson
+gradient, so on a crimson banner it renders as an invisible sliver. The mark carries the icon instead. If the
+branding changes, regenerate rather than editing pixels.
 
 If the repository stays **private**, authorise the `online-odoo` user on it so Odoo's builder can read it.
 

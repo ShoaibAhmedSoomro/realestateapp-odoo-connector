@@ -40,6 +40,10 @@ access immediately.
     'data': [
         'views/res_config_settings_views.xml',
     ],
+    # The cover image apps.odoo.com shows on the listing. Both this and static/description/icon.png are
+    # rendered from the app's own brand files (public/brand/REA-appicon.svg and REA-logo-white.svg) in the
+    # RealEstateApp repo, in the palette from its global.css — crimson #e11d48, accent #e81a47, indigo #1d0e7f.
+    'images': ['static/description/banner.png'],
     'installable': True,
     'application': False,
     'auto_install': False,
