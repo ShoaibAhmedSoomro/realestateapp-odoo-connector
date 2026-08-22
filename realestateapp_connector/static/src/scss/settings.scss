@@ -1,0 +1,197 @@
+// RealEstateApp — skin for this module's settings block.
+//
+// SCOPE RULE, non-negotiable. Every selector in this file begins with $reax or $reax-tab.
+// `.o_form_label`, `.btn`, `.badge`, `.row` and every Bootstrap utility are global to the whole Odoo
+// database: one unscoped rule here restyles every form, in every app, for every user. If you add a rule,
+// nest it inside the existing blocks — never at the top level.
+//
+// WHAT THIS CANNOT DO. Odoo renders settings through its own framework: a two-column grid of
+// `.o_setting_box`, its own form widgets, its own sidebar. Those are not ours to replace, and fighting
+// them breaks on every Odoo upgrade. So this makes the block *read as RealEstateApp* — its palette, its
+// card, its type, its buttons — rather than pretending to be the app itself. A genuine app-shaped screen
+// would need an OWL client action instead of a settings block, which is a different and larger thing.
+//
+// Colours are literals copied from RealEstateApp's own tokens (src/styles/global.css). No color-mix():
+// alphas are pre-resolved to rgba() so there is nothing to degrade and no @supports fallback to keep.
+
+$reax:     ".app_settings_block[data-key='realestateapp_connector']";
+$reax-tab: ".settings_tab .tab[data-key='realestateapp_connector']";
+
+#{$reax} {
+  // ---- tokens, straight from the app -------------------------------------------------------------
+  --reax-primary:      #e11d48;   // crimson, the app's primary
+  --reax-primary-dark: #cb1a41;   // primary at 90%, pre-resolved for :hover
+  --reax-on-primary:   #ffffff;
+  --reax-select:       #1d0e7f;   // indigo — selection, active, focus ring
+  --reax-brand:        #e81a47;   // pink accent — links, highlights
+  --reax-ink:          #141326;
+  --reax-muted:        #5a6076;
+  --reax-card:         #ffffff;
+  --reax-border:       #e7eaf3;
+  --reax-field:        #f4f6fb;
+  --reax-success:      #0e9f6e;
+  --reax-warning:      #c27803;
+  --reax-danger:       #e02424;
+  --reax-radius:       0.85rem;   // app --radius; inner controls use calc(- 2px)
+  --reax-panel-radius: 24px;      // rounded-3xl — the app's real card radius
+  --reax-shadow:       0 1px 2px -1px rgba(20, 19, 38, .09), 0 2px 6px -2px rgba(20, 19, 38, .07);
+  --reax-shadow-btn:   0 6px 16px -6px rgba(25, 18, 72, .42);
+
+  color: var(--reax-ink);
+
+  // ---- section headings --------------------------------------------------------------------------
+  h2 {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    color: var(--reax-ink);
+    margin: 24px 0 2px;
+  }
+
+  // ---- the card ----------------------------------------------------------------------------------
+  // Background, border, radius, padding ONLY. Never `display`, never `visibility`: Odoo's settings
+  // search finds and hides settings by toggling `.d-none` on exactly this element, and an !important
+  // display rule here silently breaks the search box for the whole Settings page.
+  .o_settings_container {
+    margin: 0 0 16px;
+    padding: 18px 6px;
+    background: var(--reax-card);
+    border: 1px solid var(--reax-border);
+    border-radius: var(--reax-panel-radius);
+    box-shadow: var(--reax-shadow);
+  }
+
+  .o_setting_box {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  // Opt-in full width, for the settings we tag. The only layout override in this file, and it applies
+  // to nothing we did not mark ourselves.
+  .o_setting_box.reax-wide {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  // ---- labels: the app's uppercase eyebrow -------------------------------------------------------
+  .o_form_label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--reax-muted);
+  }
+
+  // Bootstrap declares .text-muted with !important, so matching it needs the same weight.
+  .text-muted {
+    color: var(--reax-muted) !important;
+  }
+
+  // ---- buttons -----------------------------------------------------------------------------------
+  .btn-primary {
+    background-color: var(--reax-primary);
+    border-color: var(--reax-primary);
+    color: var(--reax-on-primary);
+    height: 2.25rem;
+    padding: .5rem 1rem;
+    border-radius: calc(var(--reax-radius) - 2px);
+    font-size: .875rem;
+    font-weight: 500;
+    box-shadow: none;
+    transition: all .2s cubic-bezier(.4, 0, .2, 1);
+
+    &:hover:not(:disabled) {
+      background-color: var(--reax-primary-dark);
+      border-color: var(--reax-primary-dark);
+      box-shadow: var(--reax-shadow-btn);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--reax-select);
+      outline-offset: 2px;
+      box-shadow: none;
+    }
+  }
+
+  .btn-secondary {
+    border-radius: calc(var(--reax-radius) - 2px);
+    font-size: .875rem;
+    font-weight: 500;
+  }
+
+  // ---- status badges ------------------------------------------------------------------------------
+  // Bootstrap's .text-bg-* set background AND colour with !important, hence the matching weight here.
+  .badge {
+    border-radius: 999px;
+    font-weight: 600;
+    letter-spacing: .01em;
+    padding: .35em .75em;
+  }
+
+  .badge.text-bg-success {
+    background-color: var(--reax-success) !important;
+    color: #fff !important;
+  }
+
+  .badge.text-bg-secondary {
+    background-color: var(--reax-field) !important;
+    color: var(--reax-muted) !important;
+    border: 1px solid var(--reax-border);
+  }
+
+  // ---- inputs -------------------------------------------------------------------------------------
+  input[type="text"],
+  input[type="url"] {
+    border-radius: calc(var(--reax-radius) - 2px);
+
+    &:focus {
+      border-color: var(--reax-select);
+      box-shadow: 0 0 0 3px rgba(29, 14, 127, .12);
+    }
+  }
+
+  // ---- the wordmark, above the first section ------------------------------------------------------
+  .reax-wordmark {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 2px 14px;
+
+    img {
+      height: 26px;
+      width: auto;
+    }
+
+    .reax-wordmark-sub {
+      font-size: 12px;
+      color: var(--reax-muted);
+    }
+  }
+
+  // The dark variant is swapped in by settings.dark.scss; hidden by default.
+  .reax-logo-dark { display: none; }
+
+  // ---- the computed "what gets shared" text --------------------------------------------------------
+  .reax-shares {
+    white-space: pre-wrap;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--reax-muted);
+  }
+
+  // ---- credits -------------------------------------------------------------------------------------
+  .reax-credit {
+    font-size: 12px;
+    color: var(--reax-muted);
+
+    b { color: var(--reax-ink); }
+  }
+}
+
+// The entry in the settings sidebar — give it the brand colour when it is the selected app.
+#{$reax-tab} {
+  &.selected {
+    color: var(--reax-primary, #e11d48);
+    border-color: var(--reax-primary, #e11d48);
+  }
+}

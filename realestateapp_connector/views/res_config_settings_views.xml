@@ -14,7 +14,20 @@
     <field name="arch" type="xml">
       <xpath expr="//form" position="inside">
         <app string="RealEstateApp" name="realestateapp_connector"
-             data-string="RealEstateApp">
+             data-string="RealEstateApp"
+             logo="/realestateapp_connector/static/description/icon.png">
+
+          <!-- The wordmark. Two images rather than one: the black logo vanishes on Odoo's dark backend,
+               so settings.dark.scss swaps which one is displayed. No 'class' or 'style' may go on <app>
+               itself — it is an OWL component with declared props, and an undeclared one throws in debug
+               mode and takes the entire Settings page down with it. -->
+          <div class="reax-wordmark">
+            <img src="/realestateapp_connector/static/src/img/REA-logo-black.svg"
+                 alt="RealEstateApp" class="reax-logo-light"/>
+            <img src="/realestateapp_connector/static/src/img/REA-logo-white.svg"
+                 alt="RealEstateApp" class="reax-logo-dark"/>
+            <span class="reax-wordmark-sub">Property management for the UAE</span>
+          </div>
 
           <block title="Connection" name="reax_connection">
             <setting string="Status" help="Whether this Odoo is connected to RealEstateApp.">
@@ -56,16 +69,19 @@
             </setting>
           </block>
 
-          <block title="What gets shared" name="reax_shares">
-            <setting help="RealEstateApp reads these from Odoo. It never writes back, and it never reads anything else.">
-              <div class="text-muted">
-                <div><i class="fa fa-users me-2" role="img" aria-label="Contacts"/><b>Contacts</b> — names, emails and phone numbers from Odoo Contacts.</div>
-                <div class="mt-1"><i class="fa fa-star me-2" role="img" aria-label="CRM"/><b>CRM leads</b> — only if you have the CRM app installed.</div>
-                <p class="mt-2 mb-0">
-                  Your password is never used or sent. This app creates its own API key, which you can see and
-                  revoke at any time under <b>My Profile → Account Security</b>.
-                </p>
-              </div>
+          <!-- Worked out from this database, not written down here.
+               The old version was a hand-typed list of two items that claimed "it never writes back" —
+               untrue the moment the app started sending tenants and landlords, and a screen that lies
+               about what leaves your system is worse than one that says nothing. The computed field can
+               only ever name datasets the code will genuinely move. -->
+          <block title="What gets shared" name="reax_shares_block">
+            <setting class="reax-wide"
+                     help="Worked out from the apps you actually have installed, and from what your Odoo login is allowed to do.">
+              <field name="reax_shares" nolabel="1" readonly="1" class="reax-shares"/>
+              <p class="text-muted mt-2 mb-0">
+                Your password is never used or sent. This app creates its own API key, which you can see and
+                revoke at any time under <b>My Profile → Account Security</b>.
+              </p>
             </setting>
           </block>
 

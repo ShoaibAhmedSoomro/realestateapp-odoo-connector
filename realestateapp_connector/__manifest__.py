@@ -48,6 +48,19 @@ Developed by Shoaib Ahmed — Developer (ASICO), for ASICO Property Management.
         'views/res_config_settings_views.xml',
         'views/menus.xml',
     ],
+    # Two explicit paths, never a glob. A glob would sweep settings.dark.scss into the light bundle and
+    # then need a ('remove', …) directive to pull it back out — and `remove` naming a path that is not in
+    # the bundle is the one asset construct that raises rather than warning, which takes the page down.
+    # web.assets_web_dark already includes web.assets_backend, so settings.scss loads in both modes and is
+    # declared once.
+    'assets': {
+        'web.assets_backend': [
+            'realestateapp_connector/static/src/scss/settings.scss',
+        ],
+        'web.assets_web_dark': [
+            'realestateapp_connector/static/src/scss/settings.dark.scss',
+        ],
+    },
     # The cover image apps.odoo.com shows on the listing. Both this and static/description/icon.png are
     # rendered from the app's own brand files (public/brand/REA-appicon.svg and REA-logo-white.svg) in the
     # RealEstateApp repo, in the palette from its global.css — crimson #e11d48, accent #e81a47, indigo #1d0e7f.

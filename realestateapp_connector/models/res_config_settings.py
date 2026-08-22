@@ -32,6 +32,34 @@ PARAM_ENDPOINT = 'realestateapp.endpoint'
 PARAM_CONNECTED = 'realestateapp.connected_at'
 PARAM_ACCOUNT = 'realestateapp.account'
 
+# Every dataset RealEstateApp understands, and the Odoo models each one genuinely needs.
+#
+# Declarative on purpose. The old version hardcoded 'contacts' and appended 'leads' if crm.lead existed,
+# which meant adding a dataset required editing three places and forgetting one of them was silent. Here a
+# dataset that names a model this database does not have simply does not appear — on the wire or on the
+# screen — rather than producing a connection that authenticates perfectly and then syncs nothing.
+#
+# The keys must match src/lib/connectors/registry.ts in RealEstateApp exactly. A key this side invents is
+# dropped by the enrolment route, which is the safe direction, but it will not sync and nobody is told why.
+#
+#   (key, direction, models that must ALL exist, the sentence a person reads on the screen)
+REAX_DATASETS = (
+    ('contacts', 'pull', ('res.partner',),
+     'Contacts — names, emails and phone numbers from Odoo Contacts.'),
+    ('leads', 'pull', ('crm.lead',),
+     'CRM leads — opportunities from Odoo CRM, if that app is installed.'),
+    ('tenants', 'push', ('res.partner',),
+     'Tenants — sent to Odoo as customer contacts.'),
+    ('lessors', 'push', ('res.partner',),
+     'Landlords — sent as supplier contacts, the side of Odoo that can pay them.'),
+    ('lessors_realestate', 'push', ('realestate.lessor',),
+     'Landlords — also sent to the Real Estate app in this Odoo, if you have it.'),
+    ('vendors', 'push', ('res.partner',),
+     'Vendors and contractors — sent to Odoo as supplier contacts.'),
+    ('people', 'push', ('res.partner',),
+     'Agents, facilitators and property administrators — sent to Odoo as contacts.'),
+)
+
 
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
@@ -49,19 +77,74 @@ class ResConfigSettings(models.TransientModel):
     # Read-only status, so somebody opening this screen can see where they stand without pressing anything.
     reax_connected_at = fields.Char(string='Connected', config_parameter=PARAM_CONNECTED, readonly=True)
     reax_account = fields.Char(string='Connected as', config_parameter=PARAM_ACCOUNT, readonly=True)
+    # Computed rather than written into the view, so the list on screen is the same list that goes on the
+    # wire. A hand-written list drifts the first time somebody adds a dataset and forgets this file.
+    reax_shares = fields.Text(string='What gets shared', compute='_compute_reax_shares', readonly=True)
 
     # ---- what this instance can actually offer ----------------------------------------------------
-    def _reax_datasets(self):
-        """The dataset keys RealEstateApp understands that THIS instance can serve.
+    def _reax_present_models(self):
+        """Which of the models we care about exist in THIS database. One query, not one per dataset."""
+        wanted = sorted({m for _k, _d, models, _t in REAX_DATASETS for m in models})
+        rows = self.env['ir.model'].sudo().search_read([('model', 'in', wanted)], ['model'])
+        return {r['model'] for r in rows}
 
-        Contacts is always available — res.partner is in base. CRM is only there if the app is installed,
-        and claiming it when it is not is the difference between a connection that works and one that
-        authenticates and then does nothing.
+    def _reax_can_use(self, model, operation):
+        """Existing is not the same as usable.
+
+        The sync runs as THIS login, over an API key minted for it — so a model the login cannot read (or
+        create) is a dataset that will 403 on every single record at run time. Hiding a dataset somebody
+        could have served is a far smaller failure than offering one that silently fails all night.
+
+        Odoo 18 renamed check_access_rights() to has_access(); both are handled so this also installs on 17.
+        Any surprise counts as 'no' — an access probe must never be the thing that breaks the Settings page.
         """
-        datasets = ['contacts']
-        if self.env['ir.model'].sudo().search_count([('model', '=', 'crm.lead')]):
-            datasets.append('leads')
-        return datasets
+        model_obj = self.env.get(model)
+        if model_obj is None:
+            return False
+        try:
+            if hasattr(model_obj, 'has_access'):
+                return bool(model_obj.has_access(operation))
+            return bool(model_obj.check_access_rights(operation, raise_exception=False))
+        except Exception:      # noqa: BLE001
+            return False
+
+    def _reax_offer(self):
+        """The datasets this instance can serve, split by direction.
+
+        One source for three consumers: the enrolment payload, the text on the screen, and reax_status().
+        They used to be three hand-written lists, which is how a screen ends up promising something the
+        code will not send.
+        """
+        present = self._reax_present_models()
+        offer = {'pull': [], 'push': [], 'lines': []}
+        for key, direction, models, text in REAX_DATASETS:
+            if not all(m in present for m in models):
+                continue
+            operation = 'read' if direction == 'pull' else 'create'
+            if not all(self._reax_can_use(m, operation) for m in models):
+                continue
+            offer[direction].append(key)
+            offer['lines'].append(
+                (_('Read from Odoo') if direction == 'pull' else _('Sent to Odoo'), text))
+        return offer
+
+    def _reax_datasets(self):
+        """Kept as-is for compatibility: RealEstateApp builds before push support read only this list."""
+        return self._reax_offer()['pull']
+
+    @api.depends_context('uid')
+    def _compute_reax_shares(self):
+        for record in self:
+            try:
+                groups = {}
+                for heading, text in record._reax_offer()['lines']:
+                    groups.setdefault(heading, []).append(u'  • %s' % text)
+                record.reax_shares = u'\n\n'.join(
+                    u'%s\n%s' % (heading, u'\n'.join(items)) for heading, items in groups.items()
+                ) or _('This Odoo has none of the apps this connector can use.')
+            except Exception:      # noqa: BLE001
+                # A compute that raises takes down the WHOLE Settings page, for every app, not just ours.
+                record.reax_shares = _('Could not work out what this Odoo can share.')
 
     def _reax_base_url(self):
         url = (self.env['ir.config_parameter'].sudo().get_param('web.base.url') or '').strip().rstrip('/')
@@ -111,12 +194,18 @@ class ResConfigSettings(models.TransientModel):
                               'this, or you can create one by hand under My Profile → Account Security '
                               'and connect from RealEstateApp instead.')) from exc
 
+        # Both directions on the wire. `datasets` keeps its old meaning — the sets RealEstateApp READS from
+        # this Odoo — so an app build that predates push support is unaffected. `push_datasets` is additive:
+        # an app that does not know the field ignores it, and an older module that never sends it must be
+        # read as "none", never as "everything".
+        offer = self._reax_offer()
         payload = {
             'base_url': base_url,
             'db': self.env.cr.dbname,
             'login': user.login,
             'api_key': api_key,
-            'datasets': self._reax_datasets(),
+            'datasets': offer['pull'],
+            'push_datasets': offer['push'],
             'odoo_version': self.env['ir.module.module'].sudo().search(
                 [('name', '=', 'base')], limit=1).latest_version or '',
             'module_version': self.env['ir.module.module'].sudo().search(
@@ -153,7 +242,12 @@ class ResConfigSettings(models.TransientModel):
         params.set_param(PARAM_ACCOUNT, user.login)
         params.set_param(PARAM_ENDPOINT, endpoint)
 
-        shared = ', '.join(body.get('datasets') or payload['datasets'])
+        # Report BOTH halves. Naming only what is read told people their tenants were not being sent when
+        # they were — and the app now answers with both lists for exactly this.
+        shared = ', '.join(
+            (body.get('datasets') or payload['datasets'])
+            + (body.get('push_datasets') or payload['push_datasets'])
+        ) or _('nothing yet')
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
@@ -196,9 +290,11 @@ class ResConfigSettings(models.TransientModel):
     @api.model
     def reax_status(self):
         """Small helper for support: what this instance would send, minus anything secret."""
+        offer = self._reax_offer()
         return {
             'base_url': (self.env['ir.config_parameter'].sudo().get_param('web.base.url') or ''),
             'db': self.env.cr.dbname,
             'login': self.env.user.login,
-            'datasets': self._reax_datasets(),
+            'datasets': offer['pull'],
+            'push_datasets': offer['push'],
         }
