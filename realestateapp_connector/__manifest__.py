@@ -29,8 +29,13 @@ Disconnecting
 -------------
 Press *Disconnect* here, or revoke the API key under *My Profile → Account Security*. Either one stops
 access immediately.
+
+Credits
+-------
+Developed by Shoaib Ahmed — Developer (ASICO), for ASICO Property Management.
 """,
     'author': 'ASICO Property Management',
+    'maintainer': 'Shoaib Ahmed — Developer (ASICO)',
     'website': 'https://asico.ae',
     'category': 'Productivity',
     # Free, and licensed so it stays free. LGPL-3 is the Odoo community licence for a connector like this;

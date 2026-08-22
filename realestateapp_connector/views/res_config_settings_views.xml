@@ -52,7 +52,7 @@
 
             <setting string="RealEstateApp address"
                      help="Only change this if you were given a different address for RealEstateApp.">
-              <field name="reax_endpoint" placeholder="https://login.realestateapp.ae"/>
+              <field name="reax_endpoint" placeholder="https://www.dubailuxuryhomes.ae"/>
             </setting>
           </block>
 
@@ -65,6 +65,17 @@
                   Your password is never used or sent. This app creates its own API key, which you can see and
                   revoke at any time under <b>My Profile → Account Security</b>.
                 </p>
+              </div>
+            </setting>
+          </block>
+
+          <!-- Who to go to when it misbehaves. A connector that reaches into two systems should say who
+               built it, on the screen, rather than only in a manifest nobody opens. -->
+          <block title="About" name="reax_about">
+            <setting help="Who built this app, and where to report a problem with it.">
+              <div class="text-muted">
+                <div>Developed by <b>Shoaib Ahmed</b> — Developer (ASICO)</div>
+                <div class="mt-1">RealEstateApp Connector for Odoo 18 · ASICO Property Management</div>
               </div>
             </setting>
           </block>

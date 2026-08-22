@@ -24,8 +24,8 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 # Where the enrolment is posted. Overridable because customers of a self-hosted RealEstateApp have their own
-# address; the default is the hosted service.
-DEFAULT_ENDPOINT = 'https://login.realestateapp.ae'
+# address; this default is ASICO's own, which is the address every current installation uses.
+DEFAULT_ENDPOINT = 'https://www.dubailuxuryhomes.ae'
 TIMEOUT = 20
 
 PARAM_ENDPOINT = 'realestateapp.endpoint'
