@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!--
+    The data the connector puts INTO this Odoo, reachable from the app that put it there.
+
+    The app used to have exactly one menu — Connection — so once it was connected there was nothing to
+    look at. Everything it sends lands in Odoo's own tables and is only findable if you already know to
+    go to Contacts and guess a filter.
+
+    These views deliberately point at res.partner itself, NOT at a mirror model of our own. A pushed
+    landlord has to be the same record Odoo can raise a bill against, and a pushed tenant the same one it
+    can invoice; a private copy would be a silo that Odoo accounting cannot see. So this is a filtered
+    lens over real Odoo contacts, not a second address book.
+
+    The filter is the `comment` stamp the push writes ("Synced from RealEstateApp (tenant #12)"). That
+    field was chosen over res.partner.category_id on purpose — tags would mean creating rows in a table
+    nobody asked us to touch — and it is what makes these records identifiable from inside Odoo, since
+    the id mapping lives in RealEstateApp's own database and Odoo cannot query it.
+  -->
+
+  <!-- mode="primary" so this extends the standard contact search for THIS action only. An ordinary
+       inherited view would add these filters to Odoo's own Contacts screen as well, which is somebody
+       else's screen. -->
+  <record id="view_reax_partner_search" model="ir.ui.view">
+    <field name="name">res.partner.search.realestateapp</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_res_partner_filter"/>
+    <field name="mode">primary</field>
+    <field name="priority">99</field>
+    <field name="arch" type="xml">
+      <xpath expr="//search" position="inside">
+        <separator/>
+        <filter name="reax_tenants" string="Tenants"
+                domain="[('comment', 'ilike', 'RealEstateApp (tenant #')]"/>
+        <filter name="reax_landlords" string="Landlords"
+                domain="[('comment', 'ilike', 'RealEstateApp (lessor ')]"/>
+        <filter name="reax_vendors" string="Vendors"
+                domain="[('comment', 'ilike', 'RealEstateApp (vendor ')]"/>
+        <!-- Staff carry their ROLE in the stamp rather than the word "person", so the three roles the
+             connector sends are named here. Written as an OR of the three rather than as "everything
+             that is not a tenant, landlord or vendor", because a NOT-of-three-ORs silently swallows any
+             future record type into Staff, and being wrong quietly is worse than missing a row. -->
+        <filter name="reax_staff" string="Staff"
+                domain="['|', '|',
+                         ('comment', 'ilike', 'RealEstateApp (Agent '),
+                         ('comment', 'ilike', 'RealEstateApp (Facilitator '),
+                         ('comment', 'ilike', 'RealEstateApp (PropertyAdmin ')]"/>
+      </xpath>
+    </field>
+  </record>
+
+  <record id="action_reax_partners" model="ir.actions.act_window">
+    <field name="name">Contacts from RealEstateApp</field>
+    <field name="res_model">res.partner</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="search_view_id" ref="view_reax_partner_search"/>
+    <field name="domain">[('comment', 'ilike', 'Synced from RealEstateApp (')]</field>
+    <field name="context">{'default_customer_rank': 0, 'default_supplier_rank': 0}</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">Nothing has arrived from RealEstateApp yet</p>
+      <p>
+        Tenants, landlords, vendors and staff appear here once RealEstateApp is connected and has run a
+        sync. Open <b>RealEstateApp &#8594; Connection</b> to check the connection, then start a sync from
+        the Connectors screen in RealEstateApp.
+      </p>
+    </field>
+  </record>
+</odoo>

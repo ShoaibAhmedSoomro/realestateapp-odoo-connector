@@ -46,6 +46,9 @@ Developed by Shoaib Ahmed — Developer (ASICO), for ASICO Property Management.
     'depends': ['base_setup', 'contacts', 'web'],
     'data': [
         'views/res_config_settings_views.xml',
+        # Before menus.xml: menus.xml references action_reax_partners, and Odoo resolves a ref at load
+        # time against what it has already loaded.
+        'views/partner_views.xml',
         'views/menus.xml',
     ],
     # Two explicit paths, never a glob. A glob would sweep settings.dark.scss into the light bundle and

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!--
+    The rent schedule, as Odoo invoices, inside the app that sent them.
+
+    These are ordinary account.move customer invoices — the same records Odoo can post, reconcile and
+    report on. Nothing here is a copy. The connector writes each instalment as one out_invoice against
+    the tenant's contact, with `ref` carrying the human reference (contract code / instalment number, and
+    the cheque number where there is one) and `narration` carrying the stamp this view filters on.
+
+    narration, not ref: the ref is a business reference somebody may legitimately edit, while the
+    narration stamp is what identifies the record as ours. Filtering on an editable field would make
+    invoices vanish from this list the first time an accountant tidied a reference.
+  -->
+  <record id="view_reax_move_search" model="ir.ui.view">
+    <field name="name">account.move.search.realestateapp</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+    <field name="mode">primary</field>
+    <field name="priority">99</field>
+    <field name="arch" type="xml">
+      <xpath expr="//search" position="inside">
+        <separator/>
+        <!-- The three states that actually matter when you are chasing rent. Odoo's own filters for
+             posted/draft/paid are inherited from the view above, so they are all still here. -->
+        <filter name="reax_bounced" string="Bounced cheque"
+                domain="[('ref', 'ilike', 'BOUNCED')]"/>
+        <filter name="reax_cheque" string="Paid by cheque"
+                domain="[('ref', 'ilike', 'chq ')]"/>
+        <separator/>
+        <filter name="reax_group_partner" string="Tenant" context="{'group_by': 'partner_id'}"/>
+        <filter name="reax_group_month" string="Due month" context="{'group_by': 'invoice_date_due'}"/>
+      </xpath>
+    </field>
+  </record>
+
+  <record id="action_reax_invoices" model="ir.actions.act_window">
+    <field name="name">Rent Invoices from RealEstateApp</field>
+    <field name="res_model">account.move</field>
+    <field name="view_mode">list,kanban,form</field>
+    <field name="search_view_id" ref="view_reax_move_search"/>
+    <field name="domain">
+      [('move_type', '=', 'out_invoice'),
+       ('narration', 'ilike', 'Synced from RealEstateApp (installment ')]
+    </field>
+    <field name="context">{'default_move_type': 'out_invoice'}</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">No rent invoices have arrived yet</p>
+      <p>
+        The rent schedule appears here once RealEstateApp is connected and the <b>Rent schedule &#8594; Odoo
+        invoices</b> data set has been synced. Open <b>RealEstateApp &#8594; Configuration &#8594;
+        Connection</b> to check the connection.
+      </p>
+    </field>
+  </record>
+
+  <menuitem id="menu_reax_invoices"
+            name="Rent Invoices"
+            parent="realestateapp_connector.menu_reax_root"
+            action="action_reax_invoices"
+            sequence="20"
+            groups="account.group_account_readonly"/>
+</odoo>

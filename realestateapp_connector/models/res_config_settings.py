@@ -58,6 +58,12 @@ REAX_DATASETS = (
      'Vendors and contractors — sent to Odoo as supplier contacts.'),
     ('people', 'push', ('res.partner',),
      'Agents, facilitators and property administrators — sent to Odoo as contacts.'),
+    # The rent schedule. Listed here so the settings page reports it like every other data set — it was
+    # added on the RealEstateApp side after this table was written and was the one push the Odoo end
+    # never mentioned. account.move only exists where Accounting is installed, which _reax_present_models
+    # already handles: absent, and the row simply is not offered.
+    ('invoices', 'push', ('account.move',),
+     'Rent schedule — each instalment sent as a customer invoice Odoo can post and reconcile.'),
 )
 
 

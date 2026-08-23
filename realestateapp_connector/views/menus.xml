@@ -7,6 +7,11 @@
     but it made the app invisible: somebody who installed it had no way to find it except by knowing to look
     under Settings. An integration people are told to install should be somewhere they can see.
 
+    It then had exactly ONE menu, Connection, which was the opposite problem: the app you connect through
+    showed you the connection and nothing it had done. Everything the connector sends lands in Odoo's own
+    tables, so the data menus below are filtered lenses over those — real res.partner contacts and real
+    account.move invoices, not copies. Connection moves under Configuration, where Odoo puts settings.
+
     The action deliberately opens Odoo's OWN settings screen scrolled to this module's block, rather than a
     second screen of our own. `target: inline` plus `context: {'module': ...}` is exactly how Odoo's built-in
     settings shortcuts work, so the connection is configured in one place whichever route you arrive by.
@@ -26,9 +31,27 @@
             web_icon="realestateapp_connector,static/description/icon.png"
             sequence="95"/>
 
+  <!-- Data first: this is what somebody opens the app to look at. -->
+  <menuitem id="menu_reax_contacts"
+            name="Contacts"
+            parent="menu_reax_root"
+            action="action_reax_partners"
+            sequence="10"/>
+
+  <!-- Rent invoices are NOT here. They live in account.move, and account is not a dependency of this
+       module — a CRM-only Odoo can still use the contact sync, and requiring accounting to install a
+       connector would be wrong. The bridge module realestateapp_connector_account adds that menu and
+       installs itself automatically wherever both this and Accounting are present. -->
+
+  <menuitem id="menu_reax_config"
+            name="Configuration"
+            parent="menu_reax_root"
+            sequence="90"
+            groups="base.group_system"/>
+
   <menuitem id="menu_reax_connection"
             name="Connection"
-            parent="menu_reax_root"
+            parent="menu_reax_config"
             action="action_reax_settings"
             sequence="10"
             groups="base.group_system"/>
