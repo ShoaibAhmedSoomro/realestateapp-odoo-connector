@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_reax_property_user,reax.property user,model_reax_property,base.group_user,1,0,0,0
+access_reax_property_system,reax.property system,model_reax_property,base.group_system,1,1,1,1
+access_reax_unit_user,reax.unit user,model_reax_unit,base.group_user,1,0,0,0
+access_reax_unit_system,reax.unit system,model_reax_unit,base.group_system,1,1,1,1
+access_reax_contract_user,reax.contract user,model_reax_contract,base.group_user,1,0,0,0
+access_reax_contract_system,reax.contract system,model_reax_contract,base.group_system,1,1,1,1

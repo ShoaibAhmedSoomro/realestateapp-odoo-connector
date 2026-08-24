@@ -58,6 +58,6 @@
             name="Rent Invoices"
             parent="realestateapp_connector.menu_reax_root"
             action="action_reax_invoices"
-            sequence="20"
+            sequence="50"
             groups="account.group_account_readonly"/>
 </odoo>

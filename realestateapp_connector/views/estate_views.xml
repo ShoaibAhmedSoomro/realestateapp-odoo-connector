@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- The estate, browsable where the accounting lives. Each menu is the app's module of the same
+       name; the sync overwrites these rows, so they read as a live mirror rather than a second
+       system of entry. -->
+
+  <!-- ═══ Properties ═══ -->
+  <record id="view_reax_property_list" model="ir.ui.view">
+    <field name="name">reax.property.list</field>
+    <field name="model">reax.property</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="code"/>
+        <field name="name"/>
+        <field name="community"/>
+        <field name="property_type"/>
+        <field name="city"/>
+        <field name="owner_name"/>
+        <field name="unit_count" string="Units"/>
+        <field name="contract_count" string="Contracts"/>
+        <field name="status"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_reax_property_form" model="ir.ui.view">
+    <field name="name">reax.property.form</field>
+    <field name="model">reax.property</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <div class="oe_title"><h1><field name="name"/></h1></div>
+          <group>
+            <group>
+              <field name="code"/>
+              <field name="community"/>
+              <field name="property_type"/>
+              <field name="status"/>
+            </group>
+            <group>
+              <field name="city"/>
+              <field name="emirate"/>
+              <field name="owner_name"/>
+              <field name="active"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Units">
+              <field name="unit_ids" readonly="1">
+                <list>
+                  <field name="name"/>
+                  <field name="occupancy_status"/>
+                  <field name="unit_type"/>
+                  <field name="annual_rent"/>
+                  <field name="leasable"/>
+                </list>
+              </field>
+            </page>
+            <page string="Contracts">
+              <field name="contract_ids" readonly="1">
+                <list>
+                  <field name="name"/>
+                  <field name="partner_id"/>
+                  <field name="lease_start"/>
+                  <field name="lease_end"/>
+                  <field name="rent_payable"/>
+                  <field name="status"/>
+                </list>
+              </field>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_reax_properties" model="ir.actions.act_window">
+    <field name="name">Properties</field>
+    <field name="res_model">reax.property</field>
+    <field name="view_mode">list,form</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">No properties have arrived yet</p>
+      <p>Run a sync from RealEstateApp's Connectors screen with the Properties data set enabled.</p>
+    </field>
+  </record>
+
+  <!-- ═══ Units ═══ -->
+  <record id="view_reax_unit_list" model="ir.ui.view">
+    <field name="name">reax.unit.list</field>
+    <field name="model">reax.unit</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="name"/>
+        <field name="property_id"/>
+        <field name="occupancy_status"/>
+        <field name="unit_status"/>
+        <field name="unit_type"/>
+        <field name="annual_rent"/>
+        <field name="leasable"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_reax_unit_search" model="ir.ui.view">
+    <field name="name">reax.unit.search</field>
+    <field name="model">reax.unit</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="property_id"/>
+        <filter name="occupied" string="Occupied" domain="[('occupancy_status','=','Occupied')]"/>
+        <filter name="vacant" string="Vacant" domain="[('occupancy_status','like','Vacant')]"/>
+        <group expand="0" string="Group By">
+          <filter name="by_property" string="Property" context="{'group_by':'property_id'}"/>
+          <filter name="by_occupancy" string="Occupancy" context="{'group_by':'occupancy_status'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_reax_units" model="ir.actions.act_window">
+    <field name="name">Units</field>
+    <field name="res_model">reax.unit</field>
+    <field name="view_mode">list,form</field>
+    <field name="search_view_id" ref="view_reax_unit_search"/>
+    <field name="context">{'search_default_by_property': 1}</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">No units have arrived yet</p>
+      <p>Run a sync from RealEstateApp's Connectors screen with the Units data set enabled.</p>
+    </field>
+  </record>
+
+  <!-- ═══ Contracts ═══ -->
+  <record id="view_reax_contract_list" model="ir.ui.view">
+    <field name="name">reax.contract.list</field>
+    <field name="model">reax.contract</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="property_id"/>
+        <field name="unit_nos"/>
+        <field name="lease_start"/>
+        <field name="lease_end"/>
+        <field name="rent_payable"/>
+        <field name="status"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_reax_contract_form" model="ir.ui.view">
+    <field name="name">reax.contract.form</field>
+    <field name="model">reax.contract</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-pencil-square-o"
+                    string="Rent Invoices"/>
+          </div>
+          <div class="oe_title"><h1><field name="name"/></h1></div>
+          <group>
+            <group>
+              <field name="partner_id"/>
+              <field name="property_id"/>
+              <field name="unit_nos"/>
+              <field name="contract_type"/>
+            </group>
+            <group>
+              <field name="lease_start"/>
+              <field name="lease_end"/>
+              <field name="rent_payable"/>
+              <field name="vat_on_rent"/>
+              <field name="status"/>
+              <field name="signed"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_reax_contract_search" model="ir.ui.view">
+    <field name="name">reax.contract.search</field>
+    <field name="model">reax.contract</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="property_id"/>
+        <filter name="active_leases" string="Active" domain="[('status','=','Active')]"/>
+        <filter name="expired" string="Expired" domain="[('status','=','Expired')]"/>
+        <group expand="0" string="Group By">
+          <filter name="by_status" string="Status" context="{'group_by':'status'}"/>
+          <filter name="by_property" string="Property" context="{'group_by':'property_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_reax_contracts" model="ir.actions.act_window">
+    <field name="name">Contracts</field>
+    <field name="res_model">reax.contract</field>
+    <field name="view_mode">list,form</field>
+    <field name="search_view_id" ref="view_reax_contract_search"/>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">No contracts have arrived yet</p>
+      <p>Run a sync from RealEstateApp's Connectors screen with the Contracts data set enabled.</p>
+    </field>
+  </record>
+</odoo>

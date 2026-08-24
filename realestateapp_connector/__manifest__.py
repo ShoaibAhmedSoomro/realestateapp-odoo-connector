@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'RealEstateApp Connector',
-    'version': '18.0.1.1.1',
+    'version': '18.0.2.0.0',
     'summary': 'Connect this Odoo to RealEstateApp in one click — no API keys to copy by hand.',
     'description': """
 RealEstateApp Connector
@@ -45,10 +45,12 @@ Developed by Shoaib Ahmed — Developer (ASICO), for ASICO Property Management.
     # It arrives transitively anyway, but an app in a store should not depend on that being true.
     'depends': ['base_setup', 'contacts', 'web'],
     'data': [
+        'security/ir.model.access.csv',
         'views/res_config_settings_views.xml',
-        # Before menus.xml: menus.xml references action_reax_partners, and Odoo resolves a ref at load
-        # time against what it has already loaded.
+        # Before menus.xml: menus.xml references these actions, and Odoo resolves a ref at load time
+        # against what it has already loaded.
         'views/partner_views.xml',
+        'views/estate_views.xml',
         'views/menus.xml',
     ],
     # Two explicit paths, never a glob. A glob would sweep settings.dark.scss into the light bundle and

@@ -38,6 +38,16 @@
             action="action_reax_partners"
             sequence="10"/>
 
+  <!-- The estate itself — the app's Properties, Units and Contracts modules, mirrored as first-class
+       records the sync overwrites. A contract links to the SAME res.partner its rent invoices are
+       raised against, so the chain app → contract → tenant → invoice is walkable inside Odoo. -->
+  <menuitem id="menu_reax_properties" name="Properties" parent="menu_reax_root"
+            action="action_reax_properties" sequence="20"/>
+  <menuitem id="menu_reax_units" name="Units" parent="menu_reax_root"
+            action="action_reax_units" sequence="30"/>
+  <menuitem id="menu_reax_contracts" name="Contracts" parent="menu_reax_root"
+            action="action_reax_contracts" sequence="40"/>
+
   <!-- Rent invoices are NOT here. They live in account.move, and account is not a dependency of this
        module — a CRM-only Odoo can still use the contact sync, and requiring accounting to install a
        connector would be wrong. The bridge module realestateapp_connector_account adds that menu and

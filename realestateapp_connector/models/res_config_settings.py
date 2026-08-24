@@ -64,6 +64,12 @@ REAX_DATASETS = (
     # already handles: absent, and the row simply is not offered.
     ('invoices', 'push', ('account.move',),
      'Rent schedule — each instalment sent as a customer invoice Odoo can post and reconcile.'),
+    ('properties', 'push', ('reax.property',),
+     'Properties — the buildings, mirrored under RealEstateApp → Properties.'),
+    ('units', 'push', ('reax.unit',),
+     'Units — every unit with its occupancy, linked to its building.'),
+    ('contracts', 'push', ('reax.contract',),
+     'Tenancy contracts — linked to the same contact the rent invoices are raised against.'),
 )
 
 
