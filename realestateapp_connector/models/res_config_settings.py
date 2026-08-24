@@ -200,6 +200,25 @@ class ResConfigSettings(models.TransientModel):
                               'this, or you can create one by hand under My Profile → Account Security '
                               'and connect from RealEstateApp instead.')) from exc
 
+        # COMMIT before the wire. RealEstateApp proves the key by signing in with it the moment the
+        # enrolment arrives — from its own connection, which cannot see a row this transaction has not
+        # committed. Without this the handshake can only ever fail: the key exists for us and for nobody
+        # else, RealEstateApp answers "Odoo rejected the sign-in", the UserError below rolls the key back,
+        # and every retry repeats the loop. cr.commit() mid-request is normally a smell; a side effect
+        # that an outside party must observe before this transaction ends is the textbook exception.
+        # The failure paths below now revoke the key explicitly, because after a commit an exception no
+        # longer undoes it.
+        self.env.cr.commit()
+
+        def _discard_key():
+            try:
+                self.env['res.users.apikeys'].sudo().search([
+                    ('user_id', '=', user.id), ('name', '=', 'RealEstateApp connector'),
+                ]).unlink()
+                self.env.cr.commit()
+            except Exception:      # noqa: BLE001 — cleanup must never mask the real error
+                _logger.warning('RealEstateApp: could not discard the API key after a failed enrolment')
+
         # Both directions on the wire. `datasets` keeps its old meaning — the sets RealEstateApp READS from
         # this Odoo — so an app build that predates push support is unaffected. `push_datasets` is additive:
         # an app that does not know the field ignores it, and an older module that never sends it must be
@@ -235,12 +254,15 @@ class ResConfigSettings(models.TransientModel):
                 detail = json.loads(exc.read().decode('utf-8') or '{}').get('error') or ''
             except Exception:      # noqa: BLE001
                 pass
+            _discard_key()
             raise UserError(detail or _('RealEstateApp refused the connection (error %s).') % exc.code) from exc
         except urllib.error.URLError as exc:
+            _discard_key()
             raise UserError(_('Could not reach RealEstateApp at %s. Check the address and that this server '
                               'can make outgoing connections.') % endpoint) from exc
 
         if not body.get('ok'):
+            _discard_key()
             raise UserError(body.get('error') or _('RealEstateApp did not confirm the connection.'))
 
         params = self.env['ir.config_parameter'].sudo()
