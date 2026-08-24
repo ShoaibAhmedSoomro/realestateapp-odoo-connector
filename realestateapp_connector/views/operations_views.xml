@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- List views only, deliberately: Odoo auto-generates a usable form for a model without one, and
+       these are sync-overwritten mirrors — the list IS the product. Search views where a module's
+       daily question needs one. -->
+
+  <record id="view_reax_lead_list" model="ir.ui.view">
+    <field name="name">reax.lead.list</field>
+    <field name="model">reax.lead</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="code"/>
+        <field name="name"/>
+        <field name="mobile"/>
+        <field name="property_id"/>
+        <field name="stage"/>
+        <field name="status"/>
+        <field name="priority"/>
+        <field name="assigned_to"/>
+        <field name="lead_date"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_reax_lead_search" model="ir.ui.view">
+    <field name="name">reax.lead.search</field>
+    <field name="model">reax.lead</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/><field name="code"/><field name="mobile"/><field name="property_id"/>
+        <group expand="0" string="Group By">
+          <filter name="by_stage" string="Stage" context="{'group_by':'stage'}"/>
+          <filter name="by_status" string="Status" context="{'group_by':'status'}"/>
+          <filter name="by_owner" string="Owner" context="{'group_by':'assigned_to'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="action_reax_leads" model="ir.actions.act_window">
+    <field name="name">Leads</field>
+    <field name="res_model">reax.lead</field>
+    <field name="view_mode">list,form</field>
+    <field name="search_view_id" ref="view_reax_lead_search"/>
+  </record>
+
+  <record id="view_reax_request_list" model="ir.ui.view">
+    <field name="name">reax.leasing.request.list</field>
+    <field name="model">reax.leasing.request</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="code"/>
+        <field name="partner_id"/>
+        <field name="property_id"/>
+        <field name="purpose"/>
+        <field name="lease_start"/>
+        <field name="requested_rent"/>
+        <field name="status"/>
+      </list>
+    </field>
+  </record>
+  <record id="action_reax_requests" model="ir.actions.act_window">
+    <field name="name">Leasing Requests</field>
+    <field name="res_model">reax.leasing.request</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <record id="view_reax_booking_list" model="ir.ui.view">
+    <field name="name">reax.booking.list</field>
+    <field name="model">reax.booking</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="code"/>
+        <field name="partner_id"/>
+        <field name="property_id"/>
+        <field name="lease_from"/>
+        <field name="lease_to"/>
+        <field name="status"/>
+      </list>
+    </field>
+  </record>
+  <record id="action_reax_bookings" model="ir.actions.act_window">
+    <field name="name">Bookings</field>
+    <field name="res_model">reax.booking</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <record id="view_reax_renewal_list" model="ir.ui.view">
+    <field name="name">reax.renewal.list</field>
+    <field name="model">reax.renewal</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="code"/>
+        <field name="contract_id"/>
+        <field name="current_rent"/>
+        <field name="proposed_rent"/>
+        <field name="approved_rent"/>
+        <field name="new_lease_start"/>
+        <field name="new_lease_end"/>
+        <field name="status"/>
+      </list>
+    </field>
+  </record>
+  <record id="action_reax_renewals" model="ir.actions.act_window">
+    <field name="name">Renewals</field>
+    <field name="res_model">reax.renewal</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <record id="view_reax_legal_list" model="ir.ui.view">
+    <field name="name">reax.legal.case.list</field>
+    <field name="model">reax.legal.case</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="name"/>
+        <field name="contract_id"/>
+        <field name="case_type"/>
+        <field name="stage"/>
+        <field name="status"/>
+        <field name="assigned_to"/>
+        <field name="court"/>
+      </list>
+    </field>
+  </record>
+  <record id="action_reax_legal" model="ir.actions.act_window">
+    <field name="name">Legal Cases</field>
+    <field name="res_model">reax.legal.case</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <record id="view_reax_maintenance_list" model="ir.ui.view">
+    <field name="name">reax.maintenance.list</field>
+    <field name="model">reax.maintenance</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="code"/>
+        <field name="property_id"/>
+        <field name="unit_name"/>
+        <field name="category"/>
+        <field name="priority"/>
+        <field name="status"/>
+        <field name="assigned_to"/>
+        <field name="estimated_cost"/>
+        <field name="actual_cost"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_reax_maintenance_search" model="ir.ui.view">
+    <field name="name">reax.maintenance.search</field>
+    <field name="model">reax.maintenance</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="code"/><field name="property_id"/><field name="assigned_to"/>
+        <group expand="0" string="Group By">
+          <filter name="by_status" string="Status" context="{'group_by':'status'}"/>
+          <filter name="by_property" string="Property" context="{'group_by':'property_id'}"/>
+          <filter name="by_priority" string="Priority" context="{'group_by':'priority'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="action_reax_maintenance" model="ir.actions.act_window">
+    <field name="name">Maintenance</field>
+    <field name="res_model">reax.maintenance</field>
+    <field name="view_mode">list,form</field>
+    <field name="search_view_id" ref="view_reax_maintenance_search"/>
+  </record>
+
+  <record id="view_reax_amc_list" model="ir.ui.view">
+    <field name="name">reax.amc.list</field>
+    <field name="model">reax.amc</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="code"/>
+        <field name="property_id"/>
+        <field name="service_type"/>
+        <field name="provider"/>
+        <field name="contract_value"/>
+        <field name="start_date"/>
+        <field name="end_date"/>
+        <field name="status"/>
+      </list>
+    </field>
+  </record>
+  <record id="action_reax_amc" model="ir.actions.act_window">
+    <field name="name">AMC Contracts</field>
+    <field name="res_model">reax.amc</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <record id="view_reax_asset_list" model="ir.ui.view">
+    <field name="name">reax.asset.list</field>
+    <field name="model">reax.asset</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="code"/>
+        <field name="name"/>
+        <field name="asset_type"/>
+        <field name="property_id"/>
+        <field name="make"/>
+        <field name="serial_no"/>
+        <field name="warranty_until"/>
+        <field name="status"/>
+      </list>
+    </field>
+  </record>
+  <record id="action_reax_assets" model="ir.actions.act_window">
+    <field name="name">Assets</field>
+    <field name="res_model">reax.asset</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <record id="view_reax_inspection_list" model="ir.ui.view">
+    <field name="name">reax.inspection.list</field>
+    <field name="model">reax.inspection</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="code"/>
+        <field name="kind"/>
+        <field name="property_id"/>
+        <field name="contract_id"/>
+        <field name="lease_date"/>
+        <field name="status"/>
+        <field name="accounts_cleared"/>
+        <field name="legal_cleared"/>
+      </list>
+    </field>
+  </record>
+  <record id="action_reax_inspections" model="ir.actions.act_window">
+    <field name="name">Inspections</field>
+    <field name="res_model">reax.inspection</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- People, pre-filtered through the one search view partner_views.xml already defines — the same
+       lens the Contacts menu opens, defaulted to one slice per menu entry. -->
+  <record id="action_reax_partners_tenants" model="ir.actions.act_window">
+    <field name="name">Tenants</field>
+    <field name="res_model">res.partner</field>
+    <field name="view_mode">list,kanban,form</field>
+    <field name="search_view_id" ref="view_reax_partner_search"/>
+    <field name="domain">[('comment', 'ilike', 'Synced from RealEstateApp (')]</field>
+    <field name="context">{'search_default_reax_tenants': 1}</field>
+  </record>
+  <record id="action_reax_partners_landlords" model="ir.actions.act_window">
+    <field name="name">Landlords</field>
+    <field name="res_model">res.partner</field>
+    <field name="view_mode">list,kanban,form</field>
+    <field name="search_view_id" ref="view_reax_partner_search"/>
+    <field name="domain">[('comment', 'ilike', 'Synced from RealEstateApp (')]</field>
+    <field name="context">{'search_default_reax_landlords': 1}</field>
+  </record>
+  <record id="action_reax_partners_vendors" model="ir.actions.act_window">
+    <field name="name">Vendors</field>
+    <field name="res_model">res.partner</field>
+    <field name="view_mode">list,kanban,form</field>
+    <field name="search_view_id" ref="view_reax_partner_search"/>
+    <field name="domain">[('comment', 'ilike', 'Synced from RealEstateApp (')]</field>
+    <field name="context">{'search_default_reax_vendors': 1}</field>
+  </record>
+  <record id="action_reax_partners_staff" model="ir.actions.act_window">
+    <field name="name">Staff</field>
+    <field name="res_model">res.partner</field>
+    <field name="view_mode">list,kanban,form</field>
+    <field name="search_view_id" ref="view_reax_partner_search"/>
+    <field name="domain">[('comment', 'ilike', 'Synced from RealEstateApp (')]</field>
+    <field name="context">{'search_default_reax_staff': 1}</field>
+  </record>
+</odoo>

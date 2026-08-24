@@ -54,10 +54,59 @@
     </field>
   </record>
 
+  <!-- The app's Accounts section, as slices over the SAME account.move records — Collections is the
+       open money, Bounced the returned cheques, Paid the settled — so the app's daily questions have
+       a one-click answer here without a second copy of anything. -->
+  <record id="action_reax_collections" model="ir.actions.act_window">
+    <field name="name">Collections — Open</field>
+    <field name="res_model">account.move</field>
+    <field name="view_mode">list,form</field>
+    <field name="search_view_id" ref="view_reax_move_search"/>
+    <field name="domain">
+      [('move_type', '=', 'out_invoice'),
+       ('narration', 'ilike', 'Synced from RealEstateApp (installment '),
+       ('payment_state', 'in', ['not_paid', 'partial'])]
+    </field>
+  </record>
+  <record id="action_reax_bounced" model="ir.actions.act_window">
+    <field name="name">Bounced Cheques</field>
+    <field name="res_model">account.move</field>
+    <field name="view_mode">list,form</field>
+    <field name="search_view_id" ref="view_reax_move_search"/>
+    <field name="domain">
+      [('move_type', '=', 'out_invoice'),
+       ('narration', 'ilike', 'Synced from RealEstateApp (installment '),
+       ('ref', 'ilike', 'BOUNCED')]
+    </field>
+  </record>
+  <record id="action_reax_paid" model="ir.actions.act_window">
+    <field name="name">Paid</field>
+    <field name="res_model">account.move</field>
+    <field name="view_mode">list,form</field>
+    <field name="search_view_id" ref="view_reax_move_search"/>
+    <field name="domain">
+      [('move_type', '=', 'out_invoice'),
+       ('narration', 'ilike', 'Synced from RealEstateApp (installment '),
+       ('payment_state', 'in', ['paid', 'in_payment'])]
+    </field>
+  </record>
+
   <menuitem id="menu_reax_invoices"
             name="Rent Invoices"
-            parent="realestateapp_connector.menu_reax_root"
+            parent="realestateapp_connector.menu_reax_accounts"
             action="action_reax_invoices"
-            sequence="50"
+            sequence="10"
+            groups="account.group_account_readonly"/>
+  <menuitem id="menu_reax_collections" name="Collections — Open"
+            parent="realestateapp_connector.menu_reax_accounts"
+            action="action_reax_collections" sequence="20"
+            groups="account.group_account_readonly"/>
+  <menuitem id="menu_reax_bounced" name="Bounced Cheques"
+            parent="realestateapp_connector.menu_reax_accounts"
+            action="action_reax_bounced" sequence="30"
+            groups="account.group_account_readonly"/>
+  <menuitem id="menu_reax_paid" name="Paid"
+            parent="realestateapp_connector.menu_reax_accounts"
+            action="action_reax_paid" sequence="40"
             groups="account.group_account_readonly"/>
 </odoo>

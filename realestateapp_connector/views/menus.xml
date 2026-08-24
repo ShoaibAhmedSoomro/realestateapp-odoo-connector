@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <!--
-    A top-level entry in Odoo's app grid.
+    A top-level entry in Odoo's app grid, whose tree mirrors RealEstateApp's own navigation — the
+    same group names, the same modules under them — so somebody who knows the app never has to learn
+    a second geography:
 
-    The module started as a settings block with no menu, which is the ordinary Odoo idiom for a connector —
-    but it made the app invisible: somebody who installed it had no way to find it except by knowing to look
-    under Settings. An integration people are told to install should be somewhere they can see.
+      Property Mgmt.   Properties · Units
+      Leasing          Leads · Leasing Requests · Bookings · Contracts · Renewals
+      Accounts         Rent Invoices and the collection slices (added by the accounting bridge)
+      Legal            Legal Cases
+      Operations       Maintenance · AMC Contracts · Assets · Inspections
+      People           Contacts · Tenants · Landlords · Vendors · Staff
+      Configuration    Connection
 
-    It then had exactly ONE menu, Connection, which was the opposite problem: the app you connect through
-    showed you the connection and nothing it had done. Everything the connector sends lands in Odoo's own
-    tables, so the data menus below are filtered lenses over those — real res.partner contacts and real
-    account.move invoices, not copies. Connection moves under Configuration, where Odoo puts settings.
-
-    The action deliberately opens Odoo's OWN settings screen scrolled to this module's block, rather than a
-    second screen of our own. `target: inline` plus `context: {'module': ...}` is exactly how Odoo's built-in
-    settings shortcuts work, so the connection is configured in one place whichever route you arrive by.
+    The action deliberately opens Odoo's OWN settings screen scrolled to this module's block —
+    `target: inline` plus `context: {'module': ...}` is exactly how Odoo's built-in settings
+    shortcuts work.
   -->
   <record id="action_reax_settings" model="ir.actions.act_window">
     <field name="name">RealEstateApp</field>
@@ -24,34 +25,67 @@
     <field name="context">{'module': 'realestateapp_connector'}</field>
   </record>
 
-  <!-- web_icon points at the same icon.png the Apps Store listing uses, so the grid tile and the store
-       tile are the one image rather than two that drift apart. -->
+  <!-- web_icon points at the same icon.png the Apps Store listing uses, so the grid tile and the
+       store tile are the one image rather than two that drift apart. -->
   <menuitem id="menu_reax_root"
             name="RealEstateApp"
             web_icon="realestateapp_connector,static/description/icon.png"
             sequence="95"/>
 
-  <!-- Data first: this is what somebody opens the app to look at. -->
-  <menuitem id="menu_reax_contacts"
-            name="Contacts"
-            parent="menu_reax_root"
-            action="action_reax_partners"
-            sequence="10"/>
+  <!-- ═══ Property Mgmt. ═══ -->
+  <menuitem id="menu_reax_pm" name="Property Mgmt." parent="menu_reax_root" sequence="10"/>
+  <menuitem id="menu_reax_properties" name="Properties" parent="menu_reax_pm"
+            action="action_reax_properties" sequence="10"/>
+  <menuitem id="menu_reax_units" name="Units" parent="menu_reax_pm"
+            action="action_reax_units" sequence="20"/>
 
-  <!-- The estate itself — the app's Properties, Units and Contracts modules, mirrored as first-class
-       records the sync overwrites. A contract links to the SAME res.partner its rent invoices are
-       raised against, so the chain app → contract → tenant → invoice is walkable inside Odoo. -->
-  <menuitem id="menu_reax_properties" name="Properties" parent="menu_reax_root"
-            action="action_reax_properties" sequence="20"/>
-  <menuitem id="menu_reax_units" name="Units" parent="menu_reax_root"
-            action="action_reax_units" sequence="30"/>
-  <menuitem id="menu_reax_contracts" name="Contracts" parent="menu_reax_root"
+  <!-- ═══ Leasing ═══ -->
+  <menuitem id="menu_reax_leasing" name="Leasing" parent="menu_reax_root" sequence="20"/>
+  <menuitem id="menu_reax_leads" name="Leads" parent="menu_reax_leasing"
+            action="action_reax_leads" sequence="10"/>
+  <menuitem id="menu_reax_requests" name="Leasing Requests" parent="menu_reax_leasing"
+            action="action_reax_requests" sequence="20"/>
+  <menuitem id="menu_reax_bookings" name="Bookings" parent="menu_reax_leasing"
+            action="action_reax_bookings" sequence="30"/>
+  <menuitem id="menu_reax_contracts" name="Contracts" parent="menu_reax_leasing"
             action="action_reax_contracts" sequence="40"/>
+  <menuitem id="menu_reax_renewals" name="Renewals" parent="menu_reax_leasing"
+            action="action_reax_renewals" sequence="50"/>
 
-  <!-- Rent invoices are NOT here. They live in account.move, and account is not a dependency of this
-       module — a CRM-only Odoo can still use the contact sync, and requiring accounting to install a
-       connector would be wrong. The bridge module realestateapp_connector_account adds that menu and
-       installs itself automatically wherever both this and Accounting are present. -->
+  <!-- ═══ Accounts ═══
+       The group exists here; its content (Rent Invoices and the collection slices over account.move)
+       is added by the accounting bridge, because account is not a dependency of this module — a
+       CRM-only Odoo still gets everything else. -->
+  <menuitem id="menu_reax_accounts" name="Accounts" parent="menu_reax_root" sequence="30"/>
+
+  <!-- ═══ Legal ═══ -->
+  <menuitem id="menu_reax_legal" name="Legal" parent="menu_reax_root" sequence="40"/>
+  <menuitem id="menu_reax_legal_cases" name="Legal Cases" parent="menu_reax_legal"
+            action="action_reax_legal" sequence="10"/>
+
+  <!-- ═══ Operations ═══ -->
+  <menuitem id="menu_reax_ops" name="Operations" parent="menu_reax_root" sequence="50"/>
+  <menuitem id="menu_reax_maintenance" name="Maintenance" parent="menu_reax_ops"
+            action="action_reax_maintenance" sequence="10"/>
+  <menuitem id="menu_reax_amc" name="AMC Contracts" parent="menu_reax_ops"
+            action="action_reax_amc" sequence="20"/>
+  <menuitem id="menu_reax_assets" name="Assets" parent="menu_reax_ops"
+            action="action_reax_assets" sequence="30"/>
+  <menuitem id="menu_reax_inspections" name="Inspections" parent="menu_reax_ops"
+            action="action_reax_inspections" sequence="40"/>
+
+  <!-- ═══ People ═══ -->
+  <menuitem id="menu_reax_people" name="People" parent="menu_reax_root" sequence="60"/>
+  <menuitem id="menu_reax_contacts" name="Contacts" parent="menu_reax_people"
+            action="action_reax_partners" sequence="10"/>
+  <menuitem id="menu_reax_tenants" name="Tenants" parent="menu_reax_people"
+            action="action_reax_partners_tenants" sequence="20"/>
+  <menuitem id="menu_reax_landlords" name="Landlords" parent="menu_reax_people"
+            action="action_reax_partners_landlords" sequence="30"/>
+  <menuitem id="menu_reax_vendors" name="Vendors" parent="menu_reax_people"
+            action="action_reax_partners_vendors" sequence="40"/>
+  <menuitem id="menu_reax_staff" name="Staff" parent="menu_reax_people"
+            action="action_reax_partners_staff" sequence="50"/>
 
   <menuitem id="menu_reax_config"
             name="Configuration"
