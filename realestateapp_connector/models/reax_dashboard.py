@@ -10,7 +10,9 @@ when their own groups could not read, say, account.move directly — the numbers
 records. account.move itself is touched only if the accounting bridge is installed, so a CRM-only
 Odoo still gets everything else.
 """
-from odoo import fields, models
+from dateutil.relativedelta import relativedelta
+
+from odoo import api, fields, models
 
 # The app's own definition of a won lead (LeadOverview + lead-insights agree on it since 24 Aug).
 WON_STATUSES = ('Request Approved', 'Contract Released')
@@ -104,6 +106,106 @@ class ReaxDashboard(models.Model):
             rec.amc_active = env['reax.amc'].sudo().search_count([('status', '=', 'Active')])
             rec.inspections_pending = env['reax.inspection'].sudo().search_count(
                 [('status', 'not in', ['Completed', 'Revoked'])])
+
+    # ── the one call the OWL dashboard makes: every stat and every chart series, in one round trip ──
+    @api.model
+    def get_dashboard_data(self):
+        env = self.env
+        dash = self.sudo().search([], limit=1) or self.sudo().create({'name': 'RealEstateApp'})
+        stats = dash.read([
+            'properties_total', 'units_total', 'units_occupied', 'units_vacant', 'occupancy_pct',
+            'leads_total', 'leads_won', 'requests_total', 'bookings_total', 'contracts_active',
+            'contracts_expiring_60', 'renewals_total', 'inv_count', 'inv_total', 'inv_open',
+            'inv_paid', 'inv_bounced', 'legal_open', 'legal_settled', 'maintenance_open',
+            'amc_active', 'inspections_pending'])[0]
+        stats.pop('id', None)
+
+        def by_status(model, domain=None):
+            groups = env[model].sudo().read_group(domain or [], ['__count'], ['status'])
+            rows = [{'label': g['status'] or 'Unknown', 'value': g['status_count']} for g in groups]
+            return sorted(rows, key=lambda r: -r['value'])
+
+        charts = {
+            'occupancy': [{'label': g['occupancy_status'] or 'Unknown', 'value': g['occupancy_status_count']}
+                          for g in env['reax.unit'].sudo().read_group([], ['__count'], ['occupancy_status'])],
+            'leads': by_status('reax.lead'),
+            'maintenance': by_status('reax.maintenance'),
+            'monthly': [],
+        }
+        charts['occupancy'].sort(key=lambda r: -r['value'])
+
+        counts = {'paid': 0, 'open': 0}
+        if 'account.move' in env:
+            moves = env['account.move'].sudo()
+            counts['paid'] = moves.search_count(INVOICE_DOMAIN + [('payment_state', 'in', ['paid', 'in_payment'])])
+            counts['open'] = moves.search_count(
+                INVOICE_DOMAIN + [('state', '=', 'posted'), ('payment_state', 'in', ['not_paid', 'partial'])])
+            # The rent schedule by due month, a 12-month window centred on now. Plain SQL: one pass,
+            # months come back already summed, and there is no read_group label format to parse.
+            start = fields.Date.context_today(self).replace(day=1) - relativedelta(months=5)
+            env.cr.execute("""
+                SELECT date_trunc('month', invoice_date_due)::date AS m,
+                       COUNT(*) AS n,
+                       COALESCE(SUM(amount_total), 0) AS invoiced,
+                       COALESCE(SUM(amount_total - amount_residual), 0) AS collected
+                  FROM account_move
+                 WHERE move_type = 'out_invoice' AND state = 'posted'
+                   AND narration ILIKE %s
+                   AND invoice_date_due >= %s AND invoice_date_due < %s
+                 GROUP BY 1 ORDER BY 1
+            """, ('%Synced from RealEstateApp (installment %', start, start + relativedelta(months=12)))
+            charts['monthly'] = [
+                {'month': m.isoformat(), 'count': n, 'invoiced': float(inv), 'collected': float(col)}
+                for m, n, inv, col in env.cr.fetchall()]
+
+        partners = env['res.partner'].sudo()
+        people = {
+            'tenants': partners.search_count([('comment', 'ilike', 'RealEstateApp (tenant #')]),
+            'landlords': partners.search_count([('comment', 'ilike', 'RealEstateApp (lessor ')]),
+            'vendors': partners.search_count([('comment', 'ilike', 'RealEstateApp (vendor ')]),
+        }
+
+        return {
+            'id': dash.id,
+            'stats': stats,
+            'counts': counts,
+            'charts': charts,
+            'people': people,
+            'currency': env.company.currency_id.symbol or env.company.currency_id.name or '',
+            'asof': fields.Datetime.now().isoformat(),
+        }
+
+    # ── chart drill-downs ─────────────────────────────────────────────────────────────────────────
+    @api.model
+    def action_month_invoices(self, month_start):
+        """A bar of the monthly chart → the posted invoices due that month."""
+        if 'account.move' not in self.env:
+            return False
+        start = fields.Date.from_string(month_start)
+        end = start + relativedelta(months=1)
+        action = self.env['ir.actions.act_window']._for_xml_id(
+            'realestateapp_connector_account.action_reax_invoices')
+        action['domain'] = INVOICE_DOMAIN + [
+            ('state', '=', 'posted'),
+            ('invoice_date_due', '>=', str(start)), ('invoice_date_due', '<', str(end))]
+        action['name'] = start.strftime('%B %Y')
+        return action
+
+    @api.model
+    def action_status(self, dataset, status):
+        """A segment of a status chart → the records in that status."""
+        xmlids = {
+            'occupancy': ('realestateapp_connector.action_reax_units', 'occupancy_status'),
+            'leads': ('realestateapp_connector.action_reax_leads', 'status'),
+            'maintenance': ('realestateapp_connector.action_reax_maintenance', 'status'),
+        }
+        if dataset not in xmlids:
+            return False
+        xmlid, field = xmlids[dataset]
+        action = self.env['ir.actions.act_window']._for_xml_id(xmlid)
+        action['domain'] = [(field, '=', False if status == 'Unknown' else status)]
+        action['name'] = status
+        return action
 
     # ── drill-downs: each button opens the EXACT list its number counted ─────────────────────────
     def _open(self, xmlid, domain=None, name=None):

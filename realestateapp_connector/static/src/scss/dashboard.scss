@@ -1,0 +1,260 @@
+// RealEstateApp — the Overview client action.
+//
+// Same scope rule as settings.scss: every selector lives under .o_reax_dash, which only the
+// dashboard component renders. Colours are the app's own tokens (src/styles/global.css literals) —
+// crimson primary, indigo select, soft field background, rounded-3xl white cards.
+
+.o_reax_dash {
+  --reax-primary: #e11d48;
+  --reax-select:  #1d0e7f;
+  --reax-ink:     #141326;
+  --reax-muted:   #5a6076;
+  --reax-card:    #ffffff;
+  --reax-border:  #e7eaf3;
+  --reax-field:   #f4f6fb;
+  --reax-success: #0e9f6e;
+  --reax-warning: #c27803;
+  --reax-danger:  #e02424;
+  --reax-shadow:  0 1px 2px -1px rgba(20, 19, 38, .09), 0 2px 6px -2px rgba(20, 19, 38, .07);
+  --reax-shadow-lift: 0 10px 24px -10px rgba(20, 19, 38, .18);
+
+  height: 100%;
+  overflow: auto;
+  background: var(--reax-field);
+  color: var(--reax-ink);
+
+  .reax-wrap {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 20px 24px 40px;
+  }
+
+  // ---- header ---------------------------------------------------------------------------------
+  .reax-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 6px 2px 18px;
+  }
+
+  .reax-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    color: var(--reax-primary);
+  }
+
+  .reax-title {
+    margin: 2px 0 0;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    color: var(--reax-ink);
+  }
+
+  .reax-sub {
+    margin-top: 4px;
+    font-size: 12.5px;
+    color: var(--reax-muted);
+  }
+
+  .reax-refresh {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: var(--reax-primary);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 6px 16px -6px rgba(225, 29, 72, .45);
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+
+    &:hover:not(:disabled) { background: #cb1a41; transform: translateY(-1px); }
+    &:disabled { opacity: .7; cursor: default; }
+  }
+
+  // ---- section labels ---------------------------------------------------------------------------
+  .reax-section-label {
+    margin: 22px 2px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    color: var(--reax-muted);
+  }
+
+  // ---- card grids ---------------------------------------------------------------------------------
+  .reax-grid { display: grid; gap: 12px; }
+  .reax-kpi-grid     { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+  .reax-money-grid   { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .reax-leasing-grid { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+
+  // ---- cards ----------------------------------------------------------------------------------------
+  .reax-card {
+    background: var(--reax-card);
+    border: 1px solid var(--reax-border);
+    border-radius: 18px;
+    box-shadow: var(--reax-shadow);
+  }
+
+  button.reax-card {
+    cursor: pointer;
+    text-align: left;
+    padding: 0;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+
+    &:hover { transform: translateY(-2px); box-shadow: var(--reax-shadow-lift); border-color: rgba(225, 29, 72, .35); }
+    &:focus-visible { outline: 2px solid var(--reax-select); outline-offset: 2px; }
+  }
+
+  .reax-kpi {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+
+  .reax-chip {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(29, 14, 127, .08);
+    color: var(--reax-select);
+    font-size: 16px;
+  }
+
+  .reax-kpi-body { display: flex; flex-direction: column; min-width: 0; }
+
+  .reax-kpi-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--reax-muted);
+  }
+
+  .reax-kpi-value {
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    font-variant-numeric: tabular-nums;
+    color: var(--reax-ink);
+    white-space: nowrap;
+  }
+
+  .reax-money .reax-kpi-value { font-size: 18px; }
+  .reax-compact { padding: 11px 14px; .reax-kpi-value { font-size: 18px; } }
+
+  .reax-kpi-sub {
+    font-size: 11.5px;
+    color: var(--reax-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // tones tint the chip, so state reads at a glance without shouting
+  .tone-indigo .reax-chip { background: rgba(29, 14, 127, .10);  color: var(--reax-select); }
+  .tone-green  .reax-chip { background: rgba(14, 159, 110, .12); color: var(--reax-success); }
+  .tone-amber  .reax-chip { background: rgba(194, 120, 3, .12);  color: var(--reax-warning); }
+  .tone-red    .reax-chip { background: rgba(224, 36, 36, .10);  color: var(--reax-danger); }
+
+  // ---- charts ---------------------------------------------------------------------------------------
+  .reax-charts {
+    margin-top: 22px;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(3, 1fr);
+
+    @media (max-width: 1100px) { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 720px)  { grid-template-columns: 1fr; }
+  }
+
+  .reax-span2 { grid-column: span 2; @media (max-width: 720px) { grid-column: span 1; } }
+
+  .reax-chart-card { padding: 16px 18px 14px; display: flex; flex-direction: column; }
+
+  .reax-card-head {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 10px;
+
+    h3 { margin: 0; font-size: 14px; font-weight: 700; letter-spacing: -.01em; color: var(--reax-ink); }
+    span { font-size: 11.5px; color: var(--reax-muted); }
+  }
+
+  .reax-canvas { position: relative; flex: 1; min-height: 220px; }
+  .reax-canvas-tall { min-height: 260px; }
+
+  .reax-donut-holder { display: flex; align-items: center; justify-content: center; }
+
+  .reax-donut-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transform: translateY(-14px);   // the bottom legend shifts the pie up; keep the label on its centre
+
+    .reax-donut-pct { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--reax-ink); }
+    .reax-donut-caption { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--reax-muted); }
+  }
+
+  // ---- the ops list ----------------------------------------------------------------------------------
+  .reax-ops { display: flex; flex-direction: column; gap: 4px; }
+
+  .reax-ops-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    background: transparent;
+    padding: 9px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: left;
+    transition: background .12s ease;
+
+    &:hover { background: var(--reax-field); }
+    &:focus-visible { outline: 2px solid var(--reax-select); outline-offset: 1px; }
+
+    i { color: var(--reax-muted); }
+  }
+
+  .reax-ops-label { flex: 1; font-size: 13px; color: var(--reax-ink); }
+
+  .reax-ops-value {
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--reax-ink);
+
+    &.tone-red   { color: var(--reax-danger); }
+    &.tone-amber { color: var(--reax-warning); }
+    &.tone-green { color: var(--reax-success); }
+  }
+
+  // ---- loading ----------------------------------------------------------------------------------------
+  .reax-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    padding: 80px 0;
+    color: var(--reax-muted);
+    font-size: 14px;
+  }
+}

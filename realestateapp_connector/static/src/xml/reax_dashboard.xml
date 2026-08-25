@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="realestateapp_connector.Dashboard">
+  <div class="o_reax_dash">
+    <div class="reax-wrap">
+
+      <div class="reax-head">
+        <div>
+          <div class="reax-eyebrow">RealEstateApp</div>
+          <h1 class="reax-title">Overview</h1>
+          <div class="reax-sub" t-if="state.data">
+            Live from RealEstateApp — every figure opens the exact list it counts. Refreshed <t t-esc="state.asofLabel"/>.
+          </div>
+        </div>
+        <button class="reax-refresh" t-on-click="refresh" t-att-disabled="state.refreshing">
+          <i class="fa fa-refresh" t-att-class="state.refreshing ? 'fa-spin' : ''"/> Refresh
+        </button>
+      </div>
+
+      <t t-if="state.data">
+        <!-- ── portfolio KPIs ── -->
+        <div class="reax-grid reax-kpi-grid">
+          <t t-foreach="kpis" t-as="card" t-key="card.label">
+            <button class="reax-card reax-kpi" t-att-class="card.tone ? 'tone-' + card.tone : ''"
+                    t-on-click="() => this.openCard(card)">
+              <span class="reax-chip"><i t-att-class="'fa fa-fw ' + card.icon"/></span>
+              <span class="reax-kpi-body">
+                <span class="reax-kpi-label" t-esc="card.label"/>
+                <span class="reax-kpi-value" t-esc="card.value"/>
+                <span t-if="card.sub" class="reax-kpi-sub" t-esc="card.sub"/>
+              </span>
+            </button>
+          </t>
+        </div>
+
+        <!-- ── the money ── -->
+        <div class="reax-section-label">Accounts</div>
+        <div class="reax-grid reax-money-grid">
+          <t t-foreach="moneyCards" t-as="card" t-key="card.label">
+            <button class="reax-card reax-kpi reax-money" t-att-class="card.tone ? 'tone-' + card.tone : ''"
+                    t-on-click="() => this.openCard(card)">
+              <span class="reax-chip"><i t-att-class="'fa fa-fw ' + card.icon"/></span>
+              <span class="reax-kpi-body">
+                <span class="reax-kpi-label" t-esc="card.label"/>
+                <span class="reax-kpi-value" t-esc="card.value"/>
+                <span t-if="card.sub" class="reax-kpi-sub" t-esc="card.sub"/>
+              </span>
+            </button>
+          </t>
+        </div>
+
+        <!-- ── charts ── -->
+        <div class="reax-charts">
+          <div class="reax-card reax-chart-card reax-span2">
+            <div class="reax-card-head">
+              <h3>Rent schedule by due month</h3>
+              <span>posted invoices, invoiced vs collected — click a bar for that month</span>
+            </div>
+            <div class="reax-canvas reax-canvas-tall"><canvas t-ref="canvasMonthly"/></div>
+          </div>
+
+          <div class="reax-card reax-chart-card">
+            <div class="reax-card-head">
+              <h3>Occupancy</h3>
+              <span>every unit, by occupancy status</span>
+            </div>
+            <div class="reax-canvas reax-donut-holder">
+              <canvas t-ref="canvasOccupancy"/>
+              <div class="reax-donut-center">
+                <span class="reax-donut-pct"><t t-esc="state.data.stats.occupancy_pct.toFixed(1)"/>%</span>
+                <span class="reax-donut-caption">occupied</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="reax-card reax-chart-card">
+            <div class="reax-card-head">
+              <h3>Leads pipeline</h3>
+              <span>by status — click a bar</span>
+            </div>
+            <div class="reax-canvas"><canvas t-ref="canvasLeads"/></div>
+          </div>
+
+          <div class="reax-card reax-chart-card">
+            <div class="reax-card-head">
+              <h3>Maintenance</h3>
+              <span>tickets by status</span>
+            </div>
+            <div class="reax-canvas reax-donut-holder"><canvas t-ref="canvasMaintenance"/></div>
+          </div>
+
+          <div class="reax-card reax-chart-card">
+            <div class="reax-card-head">
+              <h3>Legal &amp; Operations</h3>
+              <span>the queues that need eyes</span>
+            </div>
+            <div class="reax-ops">
+              <t t-foreach="opsRows" t-as="row" t-key="row.label">
+                <button class="reax-ops-row" t-on-click="() => this.openCard(row)">
+                  <i t-att-class="'fa fa-fw ' + row.icon"/>
+                  <span class="reax-ops-label" t-esc="row.label"/>
+                  <span class="reax-ops-value" t-att-class="row.tone ? 'tone-' + row.tone : ''" t-esc="row.value"/>
+                </button>
+              </t>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── leasing &amp; people ── -->
+        <div class="reax-section-label">Leasing &amp; People</div>
+        <div class="reax-grid reax-leasing-grid">
+          <t t-foreach="leasingCards" t-as="card" t-key="card.label">
+            <button class="reax-card reax-kpi reax-compact" t-att-class="card.tone ? 'tone-' + card.tone : ''"
+                    t-on-click="() => this.openCard(card)">
+              <span class="reax-chip"><i t-att-class="'fa fa-fw ' + card.icon"/></span>
+              <span class="reax-kpi-body">
+                <span class="reax-kpi-label" t-esc="card.label"/>
+                <span class="reax-kpi-value" t-esc="card.value"/>
+              </span>
+            </button>
+          </t>
+        </div>
+      </t>
+
+      <t t-else="">
+        <div class="reax-loading"><i class="fa fa-circle-o-notch fa-spin"/> Loading live figures…</div>
+      </t>
+
+    </div>
+  </div>
+</t>
+
+</templates>

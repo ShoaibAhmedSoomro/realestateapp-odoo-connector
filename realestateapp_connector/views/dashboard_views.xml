@@ -3,124 +3,21 @@
   <!--
     The app's dashboard, as Odoo's landing screen for this app.
 
-    One singleton reax.dashboard record whose fields are computed at read time, so every open of
-    this screen is a fresh count against the live mirrored records — nothing cached, nothing stored.
-    Every number is a button that opens the exact list it counted (same domain in compute and
-    drill-down, by construction in the model), so the dashboard can never disagree with the menus.
+    An OWL client action (static/src/js/reax_dashboard.js), not a form view: cards, charts and
+    drill-downs in RealEstateApp's own visual language. Data arrives in one rpc —
+    reax.dashboard.get_dashboard_data — computed live on every open and every refresh, and every
+    card and chart segment opens the exact list it counted, so the dashboard can never disagree
+    with the menus.
 
-    The sections mirror RealEstateApp's own dashboard: the estate, leasing, the money, legal &amp;
-    operations. The money row reads the stamped account.move records and simply shows zeros if the
-    accounting bridge is not installed.
+    The singleton row exists so the drill-down instance methods have a record to hang off; all its
+    stat fields are computed, so the row itself stores nothing but a name.
   -->
-  <record id="view_reax_dashboard_form" model="ir.ui.view">
-    <field name="name">reax.dashboard.form</field>
-    <field name="model">reax.dashboard</field>
-    <field name="arch" type="xml">
-      <form create="false" edit="false" delete="false" duplicate="false">
-        <sheet>
-          <field name="currency_id" invisible="1"/>
-          <div class="oe_title mb-3">
-            <h1>RealEstateApp — Overview</h1>
-            <p class="text-muted">Live figures from the connected RealEstateApp. Every number opens the exact list it counts.</p>
-          </div>
-
-          <separator string="Property Mgmt."/>
-          <div class="oe_button_box d-flex flex-wrap justify-content-start mb-3" name="estate_box">
-            <button name="action_properties" type="object" class="oe_stat_button" icon="fa-building">
-              <field name="properties_total" widget="statinfo" string="Properties"/>
-            </button>
-            <button name="action_units" type="object" class="oe_stat_button" icon="fa-th">
-              <field name="units_total" widget="statinfo" string="Units"/>
-            </button>
-            <button name="action_units_occupied" type="object" class="oe_stat_button" icon="fa-key">
-              <field name="units_occupied" widget="statinfo" string="Occupied"/>
-            </button>
-            <button name="action_units_vacant" type="object" class="oe_stat_button" icon="fa-square-o">
-              <field name="units_vacant" widget="statinfo" string="Vacant"/>
-            </button>
-            <button name="action_units_occupied" type="object" class="oe_stat_button" icon="fa-pie-chart">
-              <field name="occupancy_pct" widget="percentpie" string="Occupancy"/>
-            </button>
-          </div>
-
-          <separator string="Leasing"/>
-          <div class="oe_button_box d-flex flex-wrap justify-content-start mb-3" name="leasing_box">
-            <button name="action_leads" type="object" class="oe_stat_button" icon="fa-filter">
-              <field name="leads_total" widget="statinfo" string="Leads"/>
-            </button>
-            <button name="action_leads_won" type="object" class="oe_stat_button" icon="fa-trophy">
-              <field name="leads_won" widget="statinfo" string="Won Leads"/>
-            </button>
-            <button name="action_requests" type="object" class="oe_stat_button" icon="fa-file-text-o">
-              <field name="requests_total" widget="statinfo" string="Leasing Requests"/>
-            </button>
-            <button name="action_bookings" type="object" class="oe_stat_button" icon="fa-calendar-check-o">
-              <field name="bookings_total" widget="statinfo" string="Bookings"/>
-            </button>
-            <button name="action_contracts_active" type="object" class="oe_stat_button" icon="fa-handshake-o">
-              <field name="contracts_active" widget="statinfo" string="Active Contracts"/>
-            </button>
-            <button name="action_contracts_expiring" type="object" class="oe_stat_button" icon="fa-hourglass-half">
-              <field name="contracts_expiring_60" widget="statinfo" string="Expiring ≤ 60 days"/>
-            </button>
-            <button name="action_renewals" type="object" class="oe_stat_button" icon="fa-refresh">
-              <field name="renewals_total" widget="statinfo" string="Renewals"/>
-            </button>
-          </div>
-
-          <separator string="Accounts"/>
-          <div class="oe_button_box d-flex flex-wrap justify-content-start mb-3" name="money_box">
-            <button name="action_invoices" type="object" class="oe_stat_button" icon="fa-file-text">
-              <field name="inv_count" widget="statinfo" string="Rent Invoices"/>
-            </button>
-            <button name="action_invoices" type="object" class="oe_stat_button" icon="fa-money">
-              <field name="inv_total" widget="statinfo" string="Invoiced"/>
-            </button>
-            <button name="action_paid" type="object" class="oe_stat_button" icon="fa-check-circle-o">
-              <field name="inv_paid" widget="statinfo" string="Collected"/>
-            </button>
-            <button name="action_collections" type="object" class="oe_stat_button" icon="fa-exclamation-circle">
-              <field name="inv_open" widget="statinfo" string="Open"/>
-            </button>
-            <button name="action_bounced" type="object" class="oe_stat_button" icon="fa-ban">
-              <field name="inv_bounced" widget="statinfo" string="Bounced Cheques"/>
-            </button>
-          </div>
-
-          <separator string="Legal &amp; Operations"/>
-          <div class="oe_button_box d-flex flex-wrap justify-content-start mb-3" name="ops_box">
-            <button name="action_legal_open" type="object" class="oe_stat_button" icon="fa-gavel">
-              <field name="legal_open" widget="statinfo" string="Open Cases"/>
-            </button>
-            <button name="action_legal_settled" type="object" class="oe_stat_button" icon="fa-check-square-o">
-              <field name="legal_settled" widget="statinfo" string="Settled Cases"/>
-            </button>
-            <button name="action_maintenance_open" type="object" class="oe_stat_button" icon="fa-wrench">
-              <field name="maintenance_open" widget="statinfo" string="Open Maintenance"/>
-            </button>
-            <button name="action_amc" type="object" class="oe_stat_button" icon="fa-shield">
-              <field name="amc_active" widget="statinfo" string="Active AMC"/>
-            </button>
-            <button name="action_inspections_pending" type="object" class="oe_stat_button" icon="fa-search">
-              <field name="inspections_pending" widget="statinfo" string="Pending Inspections"/>
-            </button>
-          </div>
-        </sheet>
-      </form>
-    </field>
-  </record>
-
-  <!-- The one row the dashboard action opens. Not noupdate: an upgrade recreates it if somebody
-       managed to delete it, and rewriting `name` is harmless — everything else is computed. -->
   <record id="reax_dashboard_singleton" model="reax.dashboard">
     <field name="name">RealEstateApp</field>
   </record>
 
-  <record id="action_reax_dashboard" model="ir.actions.act_window">
+  <record id="action_reax_dashboard_client" model="ir.actions.client">
     <field name="name">Overview</field>
-    <field name="res_model">reax.dashboard</field>
-    <field name="view_mode">form</field>
-    <field name="res_id" ref="reax_dashboard_singleton"/>
-    <field name="target">current</field>
+    <field name="tag">reax_dashboard</field>
   </record>
 </odoo>
