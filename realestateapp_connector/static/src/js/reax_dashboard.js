@@ -11,7 +11,7 @@
 import { Component, onWillStart, onMounted, onWillUnmount, useState, useRef } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
-import { loadBundle } from "@web/core/assets";
+import { loadBundle, loadJS } from "@web/core/assets";
 
 // The app's palette (src/styles/global.css literals, same as settings.scss).
 const INK = "#141326";
@@ -41,7 +41,12 @@ export class ReaxDashboard extends Component {
         this.canvasMaintenance = useRef("canvasMaintenance");
 
         onWillStart(async () => {
-            await loadBundle("web.chart_lib");
+            // This deployment's web.chart_lib bundle answers [] even though the library file itself
+            // ships (v4.4.1 at the path below) — so fall back to loading the file directly.
+            await loadBundle("web.chart_lib").catch(() => {});
+            if (typeof window.Chart === "undefined") {
+                await loadJS("/web/static/lib/Chart/Chart.js");
+            }
             await this.load();
         });
         onMounted(() => {
