@@ -32,6 +32,12 @@
             web_icon="realestateapp_connector,static/description/icon.png"
             sequence="95"/>
 
+  <!-- ═══ Dashboard ═══
+       First on purpose: Odoo lands on an app's first actionable menu, so opening RealEstateApp
+       opens the overview — same as the app itself. -->
+  <menuitem id="menu_reax_dashboard" name="Dashboard" parent="menu_reax_root"
+            action="action_reax_dashboard" sequence="5"/>
+
   <!-- ═══ Property Mgmt. ═══ -->
   <menuitem id="menu_reax_pm" name="Property Mgmt." parent="menu_reax_root" sequence="10"/>
   <menuitem id="menu_reax_properties" name="Properties" parent="menu_reax_pm"

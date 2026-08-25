@@ -2,3 +2,4 @@
 from . import res_config_settings
 from . import reax_estate
 from . import reax_operations
+from . import reax_dashboard

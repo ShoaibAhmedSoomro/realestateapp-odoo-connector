@@ -23,3 +23,5 @@ access_reax_asset_user,reax.asset user,model_reax_asset,base.group_user,1,0,0,0
 access_reax_asset_system,reax.asset system,model_reax_asset,base.group_system,1,1,1,1
 access_reax_inspection_user,reax.inspection user,model_reax_inspection,base.group_user,1,0,0,0
 access_reax_inspection_system,reax.inspection system,model_reax_inspection,base.group_system,1,1,1,1
+access_reax_dashboard_user,reax.dashboard user,model_reax_dashboard,base.group_user,1,0,0,0
+access_reax_dashboard_system,reax.dashboard system,model_reax_dashboard,base.group_system,1,1,1,1

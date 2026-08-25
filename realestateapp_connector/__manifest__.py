@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'RealEstateApp Connector',
-    'version': '18.0.3.0.0',
+    'version': '18.0.4.0.0',
     'summary': 'Connect this Odoo to RealEstateApp in one click — no API keys to copy by hand.',
     'description': """
 RealEstateApp Connector
@@ -52,6 +52,7 @@ Developed by Shoaib Ahmed — Developer (ASICO), for ASICO Property Management.
         'views/partner_views.xml',
         'views/estate_views.xml',
         'views/operations_views.xml',
+        'views/dashboard_views.xml',
         'views/menus.xml',
     ],
     # Two explicit paths, never a glob. A glob would sweep settings.dark.scss into the light bundle and
