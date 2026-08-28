@@ -53,6 +53,9 @@ class ReaxLeasingRequest(models.Model):
     _name = 'reax.leasing.request'
     _description = 'RealEstateApp Leasing Request'
     _order = 'id desc'
+    # Without this Odoo prints 'reax.booking,42' wherever a record is named — its fallback when a
+    # model has neither a `name` field nor a _rec_name. The code is what people actually call these.
+    _rec_name = 'code'
 
     code = fields.Char(required=True, index=True)
     partner_id = fields.Many2one('res.partner', string='Tenant', index=True)
@@ -72,6 +75,9 @@ class ReaxBooking(models.Model):
     _name = 'reax.booking'
     _description = 'RealEstateApp Booking'
     _order = 'id desc'
+    # Without this Odoo prints 'reax.booking,42' wherever a record is named — its fallback when a
+    # model has neither a `name` field nor a _rec_name. The code is what people actually call these.
+    _rec_name = 'code'
 
     code = fields.Char(required=True, index=True)
     partner_id = fields.Many2one('res.partner', string='Tenant', index=True)
@@ -88,6 +94,9 @@ class ReaxRenewal(models.Model):
     _name = 'reax.renewal'
     _description = 'RealEstateApp Renewal'
     _order = 'id desc'
+    # Without this Odoo prints 'reax.booking,42' wherever a record is named — its fallback when a
+    # model has neither a `name` field nor a _rec_name. The code is what people actually call these.
+    _rec_name = 'code'
 
     code = fields.Char(required=True, index=True)
     contract_id = fields.Many2one('reax.contract', index=True)
@@ -128,6 +137,9 @@ class ReaxMaintenance(models.Model):
     _name = 'reax.maintenance'
     _description = 'RealEstateApp Maintenance Ticket'
     _order = 'id desc'
+    # Without this Odoo prints 'reax.booking,42' wherever a record is named — its fallback when a
+    # model has neither a `name` field nor a _rec_name. The code is what people actually call these.
+    _rec_name = 'code'
 
     code = fields.Char(required=True, index=True)
     property_id = fields.Many2one('reax.property', index=True)
@@ -155,6 +167,9 @@ class ReaxAmc(models.Model):
     _name = 'reax.amc'
     _description = 'RealEstateApp AMC Contract'
     _order = 'end_date'
+    # Without this Odoo prints 'reax.booking,42' wherever a record is named — its fallback when a
+    # model has neither a `name` field nor a _rec_name. The code is what people actually call these.
+    _rec_name = 'code'
 
     code = fields.Char(required=True, index=True)
     property_id = fields.Many2one('reax.property', index=True)
@@ -195,6 +210,9 @@ class ReaxInspection(models.Model):
     _name = 'reax.inspection'
     _description = 'RealEstateApp Move-In/Out Inspection'
     _order = 'id desc'
+    # Without this Odoo prints 'reax.booking,42' wherever a record is named — its fallback when a
+    # model has neither a `name` field nor a _rec_name. The code is what people actually call these.
+    _rec_name = 'code'
 
     code = fields.Char(required=True, index=True)
     kind = fields.Char(string='Kind (text)', index=True)

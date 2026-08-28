@@ -159,20 +159,41 @@
                     string="Rent Invoices"/>
           </div>
           <div class="oe_title"><h1><field name="name"/></h1></div>
+          <!-- The two parties first and in full: who is renting, who owns it, and how to reach
+               either without opening two more records. Contacts are related fields, so they are the
+               partner's own details rather than a stale copy taken at signing. -->
           <group>
-            <group>
+            <group string="Tenant">
               <field name="partner_id"/>
+              <field name="tenant_phone"/>
+              <field name="tenant_email" widget="email"/>
+              <field name="tenant_vat"/>
+            </group>
+            <group string="Landlord">
+              <field name="landlord_id"/>
+              <field name="landlord_phone"/>
+              <field name="landlord_email" widget="email"/>
+            </group>
+          </group>
+          <group>
+            <group string="Premises">
               <field name="property_id"/>
               <field name="unit_nos"/>
-              <field name="contract_type"/>
             </group>
-            <group>
+            <group string="Term">
               <field name="lease_start"/>
               <field name="lease_end"/>
-              <field name="rent_payable"/>
-              <field name="vat_on_rent"/>
+              <field name="contract_type_id"/>
               <field name="status_id"/>
               <field name="signed"/>
+            </group>
+          </group>
+          <group string="Money">
+            <group>
+              <field name="rent_payable"/>
+            </group>
+            <group>
+              <field name="vat_on_rent"/>
             </group>
           </group>
         </sheet>

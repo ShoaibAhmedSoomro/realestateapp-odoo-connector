@@ -97,6 +97,15 @@ class ReaxContract(models.Model):
     name = fields.Char(string='Contract No', required=True, index=True)
     partner_id = fields.Many2one('res.partner', string='Tenant', index=True,
                                  help='The same contact rent invoices are raised against.')
+    # WHO the parties actually are, without leaving the contract. Related fields rather than copies:
+    # the contact is the single record, so a phone number corrected on the partner is corrected here.
+    tenant_email = fields.Char(related='partner_id.email', string='Tenant Email', readonly=True)
+    tenant_phone = fields.Char(related='partner_id.mobile', string='Tenant Mobile', readonly=True)
+    tenant_vat = fields.Char(related='partner_id.vat', string='Tenant TRN', readonly=True)
+    landlord_id = fields.Many2one('res.partner', string='Landlord', index=True,
+                                  help='The property owner this lease is held for.')
+    landlord_email = fields.Char(related='landlord_id.email', string='Landlord Email', readonly=True)
+    landlord_phone = fields.Char(related='landlord_id.mobile', string='Landlord Mobile', readonly=True)
     property_id = fields.Many2one('reax.property', index=True)
     unit_nos = fields.Char(string='Units')
     status = fields.Char(index=True, string='Status (text)')
