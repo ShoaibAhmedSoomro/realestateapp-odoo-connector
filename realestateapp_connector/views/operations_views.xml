@@ -5,7 +5,7 @@
        daily question needs one. -->
 
   <record id="view_reax_lead_list" model="ir.ui.view">
-    <field name="name">reax.lead.list</field>
+    <field name="name">Leads</field>
     <field name="model">reax.lead</field>
     <field name="arch" type="xml">
       <list>
@@ -22,7 +22,7 @@
     </field>
   </record>
   <record id="view_reax_lead_search" model="ir.ui.view">
-    <field name="name">reax.lead.search</field>
+    <field name="name">Search Leads</field>
     <field name="model">reax.lead</field>
     <field name="arch" type="xml">
       <search>
@@ -43,7 +43,7 @@
   </record>
 
   <record id="view_reax_request_list" model="ir.ui.view">
-    <field name="name">reax.leasing.request.list</field>
+    <field name="name">Leasing Requests</field>
     <field name="model">reax.leasing.request</field>
     <field name="arch" type="xml">
       <list>
@@ -64,7 +64,7 @@
   </record>
 
   <record id="view_reax_booking_list" model="ir.ui.view">
-    <field name="name">reax.booking.list</field>
+    <field name="name">Bookings</field>
     <field name="model">reax.booking</field>
     <field name="arch" type="xml">
       <list>
@@ -84,7 +84,7 @@
   </record>
 
   <record id="view_reax_renewal_list" model="ir.ui.view">
-    <field name="name">reax.renewal.list</field>
+    <field name="name">Renewals</field>
     <field name="model">reax.renewal</field>
     <field name="arch" type="xml">
       <list>
@@ -106,7 +106,7 @@
   </record>
 
   <record id="view_reax_legal_list" model="ir.ui.view">
-    <field name="name">reax.legal.case.list</field>
+    <field name="name">Legal Cases</field>
     <field name="model">reax.legal.case</field>
     <field name="arch" type="xml">
       <list>
@@ -127,7 +127,7 @@
   </record>
 
   <record id="view_reax_maintenance_list" model="ir.ui.view">
-    <field name="name">reax.maintenance.list</field>
+    <field name="name">Maintenance Requests</field>
     <field name="model">reax.maintenance</field>
     <field name="arch" type="xml">
       <list>
@@ -144,7 +144,7 @@
     </field>
   </record>
   <record id="view_reax_maintenance_search" model="ir.ui.view">
-    <field name="name">reax.maintenance.search</field>
+    <field name="name">Search Maintenance</field>
     <field name="model">reax.maintenance</field>
     <field name="arch" type="xml">
       <search>
@@ -165,7 +165,7 @@
   </record>
 
   <record id="view_reax_amc_list" model="ir.ui.view">
-    <field name="name">reax.amc.list</field>
+    <field name="name">AMC Contracts</field>
     <field name="model">reax.amc</field>
     <field name="arch" type="xml">
       <list>
@@ -187,7 +187,7 @@
   </record>
 
   <record id="view_reax_asset_list" model="ir.ui.view">
-    <field name="name">reax.asset.list</field>
+    <field name="name">Assets</field>
     <field name="model">reax.asset</field>
     <field name="arch" type="xml">
       <list>
@@ -209,7 +209,7 @@
   </record>
 
   <record id="view_reax_inspection_list" model="ir.ui.view">
-    <field name="name">reax.inspection.list</field>
+    <field name="name">Inspections</field>
     <field name="model">reax.inspection</field>
     <field name="arch" type="xml">
       <list>

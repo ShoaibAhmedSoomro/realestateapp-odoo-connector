@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!--
+    The lists behind every status and type dropdown. RealEstateApp fills these as it syncs, so this
+    screen is normally read-only in spirit: it exists so somebody can SEE what a dropdown will offer,
+    and give a value a friendlier label than the code the app stores.
+
+    The views carry human names on purpose — Odoo prints a view's name as the title of the dialog a
+    "Search More…" opens, and a technical one reads as a bug to whoever is looking at it.
+  -->
+  <record id="view_reax_option_list" model="ir.ui.view">
+    <field name="name">Values</field>
+    <field name="model">reax.option</field>
+    <field name="arch" type="xml">
+      <list string="Values" editable="bottom">
+        <field name="category"/>
+        <field name="code"/>
+        <field name="name"/>
+        <field name="sequence" widget="handle"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_reax_option_search" model="ir.ui.view">
+    <field name="name">Search Values</field>
+    <field name="model">reax.option</field>
+    <field name="arch" type="xml">
+      <search string="Values">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="category"/>
+        <group expand="1" string="Group By">
+          <filter name="by_category" string="List" context="{'group_by':'category'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_reax_options" model="ir.actions.act_window">
+    <field name="name">Dropdown Values</field>
+    <field name="res_model">reax.option</field>
+    <field name="view_mode">list</field>
+    <field name="search_view_id" ref="view_reax_option_search"/>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">No values yet</p>
+      <p>These fill in automatically as RealEstateApp syncs. Each one is a choice in a status or type dropdown.</p>
+    </field>
+  </record>
+
+  <menuitem id="menu_reax_options" name="Dropdown Values" parent="menu_reax_config"
+            action="action_reax_options" sequence="20"/>
+</odoo>
