@@ -13,9 +13,9 @@
         <field name="name"/>
         <field name="mobile"/>
         <field name="property_id"/>
-        <field name="stage"/>
-        <field name="status"/>
-        <field name="priority"/>
+        <field name="stage_id"/>
+        <field name="status_id"/>
+        <field name="priority_id"/>
         <field name="assigned_to"/>
         <field name="lead_date"/>
       </list>
@@ -28,8 +28,8 @@
       <search>
         <field name="name"/><field name="code"/><field name="mobile"/><field name="property_id"/>
         <group expand="0" string="Group By">
-          <filter name="by_stage" string="Stage" context="{'group_by':'stage'}"/>
-          <filter name="by_status" string="Status" context="{'group_by':'status'}"/>
+          <filter name="by_stage" string="Stage" context="{'group_by':'stage_id'}"/>
+          <filter name="by_status" string="Status" context="{'group_by':'status_id'}"/>
           <filter name="by_owner" string="Owner" context="{'group_by':'assigned_to'}"/>
         </group>
       </search>
@@ -53,7 +53,7 @@
         <field name="purpose"/>
         <field name="lease_start"/>
         <field name="requested_rent"/>
-        <field name="status"/>
+        <field name="status_id"/>
       </list>
     </field>
   </record>
@@ -73,7 +73,7 @@
         <field name="property_id"/>
         <field name="lease_from"/>
         <field name="lease_to"/>
-        <field name="status"/>
+        <field name="status_id"/>
       </list>
     </field>
   </record>
@@ -95,7 +95,7 @@
         <field name="approved_rent"/>
         <field name="new_lease_start"/>
         <field name="new_lease_end"/>
-        <field name="status"/>
+        <field name="status_id"/>
       </list>
     </field>
   </record>
@@ -113,8 +113,8 @@
         <field name="name"/>
         <field name="contract_id"/>
         <field name="case_type"/>
-        <field name="stage"/>
-        <field name="status"/>
+        <field name="stage_id"/>
+        <field name="status_id"/>
         <field name="assigned_to"/>
         <field name="court"/>
       </list>
@@ -135,8 +135,8 @@
         <field name="property_id"/>
         <field name="unit_name"/>
         <field name="category"/>
-        <field name="priority"/>
-        <field name="status"/>
+        <field name="priority_id"/>
+        <field name="status_id"/>
         <field name="assigned_to"/>
         <field name="estimated_cost"/>
         <field name="actual_cost"/>
@@ -150,7 +150,7 @@
       <search>
         <field name="code"/><field name="property_id"/><field name="assigned_to"/>
         <group expand="0" string="Group By">
-          <filter name="by_status" string="Status" context="{'group_by':'status'}"/>
+          <filter name="by_status" string="Status" context="{'group_by':'status_id'}"/>
           <filter name="by_property" string="Property" context="{'group_by':'property_id'}"/>
           <filter name="by_priority" string="Priority" context="{'group_by':'priority'}"/>
         </group>
@@ -176,7 +176,7 @@
         <field name="contract_value"/>
         <field name="start_date"/>
         <field name="end_date"/>
-        <field name="status"/>
+        <field name="status_id"/>
       </list>
     </field>
   </record>
@@ -198,7 +198,7 @@
         <field name="make"/>
         <field name="serial_no"/>
         <field name="warranty_until"/>
-        <field name="status"/>
+        <field name="status_id"/>
       </list>
     </field>
   </record>
@@ -218,7 +218,7 @@
         <field name="property_id"/>
         <field name="contract_id"/>
         <field name="lease_date"/>
-        <field name="status"/>
+        <field name="status_id"/>
         <field name="accounts_cleared"/>
         <field name="legal_cleared"/>
       </list>

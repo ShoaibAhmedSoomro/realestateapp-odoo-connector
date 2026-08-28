@@ -13,12 +13,12 @@
         <field name="code"/>
         <field name="name"/>
         <field name="community"/>
-        <field name="property_type"/>
+        <field name="property_type_id"/>
         <field name="city"/>
         <field name="owner_name"/>
         <field name="unit_count" string="Units"/>
         <field name="contract_count" string="Contracts"/>
-        <field name="status"/>
+        <field name="status_id"/>
       </list>
     </field>
   </record>
@@ -34,8 +34,8 @@
             <group>
               <field name="code"/>
               <field name="community"/>
-              <field name="property_type"/>
-              <field name="status"/>
+              <field name="property_type_id"/>
+              <field name="status_id"/>
             </group>
             <group>
               <field name="city"/>
@@ -49,8 +49,8 @@
               <field name="unit_ids" readonly="1">
                 <list>
                   <field name="name"/>
-                  <field name="occupancy_status"/>
-                  <field name="unit_type"/>
+                  <field name="occupancy_status_id"/>
+                  <field name="unit_type_id"/>
                   <field name="annual_rent"/>
                   <field name="leasable"/>
                 </list>
@@ -64,7 +64,7 @@
                   <field name="lease_start"/>
                   <field name="lease_end"/>
                   <field name="rent_payable"/>
-                  <field name="status"/>
+                  <field name="status_id"/>
                 </list>
               </field>
             </page>
@@ -92,9 +92,9 @@
       <list>
         <field name="name"/>
         <field name="property_id"/>
-        <field name="occupancy_status"/>
-        <field name="unit_status"/>
-        <field name="unit_type"/>
+        <field name="occupancy_status_id"/>
+        <field name="unit_status_id"/>
+        <field name="unit_type_id"/>
         <field name="annual_rent"/>
         <field name="leasable"/>
       </list>
@@ -108,11 +108,11 @@
       <search>
         <field name="name"/>
         <field name="property_id"/>
-        <filter name="occupied" string="Occupied" domain="[('occupancy_status','=','Occupied')]"/>
-        <filter name="vacant" string="Vacant" domain="[('occupancy_status','like','Vacant')]"/>
+        <filter name="occupied" string="Occupied" domain="[('occupancy_status_id.code','=','Occupied')]"/>
+        <filter name="vacant" string="Vacant" domain="[('occupancy_status_id.code','like','Vacant')]"/>
         <group expand="0" string="Group By">
           <filter name="by_property" string="Property" context="{'group_by':'property_id'}"/>
-          <filter name="by_occupancy" string="Occupancy" context="{'group_by':'occupancy_status'}"/>
+          <filter name="by_occupancy" string="Occupancy" context="{'group_by':'occupancy_status_id'}"/>
         </group>
       </search>
     </field>
@@ -143,7 +143,7 @@
         <field name="lease_start"/>
         <field name="lease_end"/>
         <field name="rent_payable"/>
-        <field name="status"/>
+        <field name="status_id"/>
       </list>
     </field>
   </record>
@@ -171,7 +171,7 @@
               <field name="lease_end"/>
               <field name="rent_payable"/>
               <field name="vat_on_rent"/>
-              <field name="status"/>
+              <field name="status_id"/>
               <field name="signed"/>
             </group>
           </group>
@@ -188,10 +188,10 @@
         <field name="name"/>
         <field name="partner_id"/>
         <field name="property_id"/>
-        <filter name="active_leases" string="Active" domain="[('status','=','Active')]"/>
-        <filter name="expired" string="Expired" domain="[('status','=','Expired')]"/>
+        <filter name="active_leases" string="Active" domain="[('status_id.code','=','Active')]"/>
+        <filter name="expired" string="Expired" domain="[('status_id.code','=','Expired')]"/>
         <group expand="0" string="Group By">
-          <filter name="by_status" string="Status" context="{'group_by':'status'}"/>
+          <filter name="by_status" string="Status" context="{'group_by':'status_id'}"/>
           <filter name="by_property" string="Property" context="{'group_by':'property_id'}"/>
         </group>
       </search>

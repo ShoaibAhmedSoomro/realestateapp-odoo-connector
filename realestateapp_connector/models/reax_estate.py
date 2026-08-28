@@ -13,6 +13,18 @@ lives in account.move, never in a silo (see the connector README for why).
 """
 from odoo import api, fields, models
 
+# Vocabulary fields come in pairs during the changeover: the original Char (what older copies of
+# RealEstateApp still write, and what existing rows already hold) and a Many2one to reax.option that
+# gives Odoo a real dropdown. The sync fills whichever this Odoo has, so an app and an addon of
+# different ages keep working. The Char columns go in a later release, once every connected app is
+# sending ids.
+def _opt(category, string):
+    return fields.Many2one(
+        'reax.option', string=string, index=True, ondelete='restrict',
+        domain=[('category', '=', category)],
+        help='Chosen from the list RealEstateApp maintains.')
+
+
 
 class ReaxProperty(models.Model):
     _name = 'reax.property'
@@ -23,10 +35,13 @@ class ReaxProperty(models.Model):
     code = fields.Char(required=True, index=True)
     name = fields.Char(required=True)
     community = fields.Char()
-    property_type = fields.Char(string='Type')
-    status = fields.Char()
+    property_type = fields.Char(string='Type (text)')
+    status = fields.Char(string='Status (text)')
     city = fields.Char()
-    emirate = fields.Char()
+    emirate = fields.Char(string='Emirate (text)')
+    property_type_id = _opt('property_type', 'Type')
+    status_id = _opt('property_status', 'Status')
+    emirate_id = _opt('emirate', 'Emirate')
     owner_name = fields.Char(string='Owner')
     active = fields.Boolean(default=True)
     unit_ids = fields.One2many('reax.unit', 'property_id', string='Units')
@@ -58,9 +73,12 @@ class ReaxUnit(models.Model):
     code = fields.Char(required=True, index=True, help='The app-side unit identity the sync matches on.')
     name = fields.Char(string='Unit No', required=True)
     property_id = fields.Many2one('reax.property', required=True, ondelete='cascade', index=True)
-    occupancy_status = fields.Char(string='Occupancy')
-    unit_status = fields.Char(string='Unit Status')
-    unit_type = fields.Char(string='Type')
+    occupancy_status = fields.Char(string='Occupancy (text)')
+    unit_status = fields.Char(string='Unit Status (text)')
+    unit_type = fields.Char(string='Type (text)')
+    occupancy_status_id = _opt('unit_occupancy', 'Occupancy')
+    unit_status_id = _opt('unit_status', 'Unit Status')
+    unit_type_id = _opt('unit_type', 'Type')
     annual_rent = fields.Float()
     leasable = fields.Boolean(default=True)
     active = fields.Boolean(default=True)
@@ -81,8 +99,10 @@ class ReaxContract(models.Model):
                                  help='The same contact rent invoices are raised against.')
     property_id = fields.Many2one('reax.property', index=True)
     unit_nos = fields.Char(string='Units')
-    status = fields.Char(index=True)
-    contract_type = fields.Char(string='Type')
+    status = fields.Char(index=True, string='Status (text)')
+    contract_type = fields.Char(string='Type (text)')
+    status_id = _opt('contract_status', 'Status')
+    contract_type_id = _opt('contract_type', 'Type')
     lease_start = fields.Date()
     lease_end = fields.Date()
     rent_payable = fields.Float(string='Annual Rent')
