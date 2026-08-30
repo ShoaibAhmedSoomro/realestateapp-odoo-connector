@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!--
+    THE PAYMENT SCHEDULE, ON THE CONTRACT.
+
+    Every charge RealEstateApp raised for this tenancy, in one list: rent instalment by instalment,
+    and alongside them the security deposit, administration fee, commission and anything else the
+    contract carries. They are the SAME account.move records Odoo posts and reconciles — nothing here
+    is a copy, and opening a line opens the real invoice.
+
+    Each instalment is its own invoice on purpose: they fall due on different dates, book to
+    different accounts (rent to 40137, a deposit to the 2050 liability, commission to 40111) and are
+    settled by different cheques. That is correct accounting and it is why one invoice shows one
+    line. What was missing was any way to see the SET, which is what this is.
+  -->
+  <record id="view_reax_contract_form_schedule" model="ir.ui.view">
+    <field name="name">Tenancy Contract — Payment Schedule</field>
+    <field name="model">reax.contract</field>
+    <field name="inherit_id" ref="realestateapp_connector.view_reax_contract_form"/>
+    <field name="arch" type="xml">
+
+      <!-- A count on the button that was already there, so the schedule announces itself instead of
+           looking like an empty link. -->
+      <xpath expr="//button[@name='action_view_invoices']" position="attributes">
+        <attribute name="string"/>
+      </xpath>
+      <xpath expr="//button[@name='action_view_invoices']" position="inside">
+        <field name="invoice_count" widget="statinfo" string="Charges"/>
+      </xpath>
+
+      <!-- The money summary belongs next to the rent, where somebody is already looking. -->
+      <xpath expr="//group[@string='Money']" position="inside">
+        <group>
+          <field name="company_currency_id" invisible="1"/>
+          <field name="invoice_total" widget="monetary"/>
+          <field name="invoice_paid" widget="monetary"/>
+          <field name="invoice_due" widget="monetary"/>
+        </group>
+      </xpath>
+
+      <xpath expr="//sheet" position="inside">
+        <notebook>
+          <page string="Payment Schedule" name="reax_schedule">
+            <field name="invoice_ids" nolabel="1" readonly="1">
+              <list decoration-success="payment_state in ('paid','in_payment')"
+                    decoration-muted="state == 'cancel'"
+                    decoration-danger="state == 'posted' and payment_state == 'not_paid' and invoice_date_due &lt; current_date">
+                <field name="invoice_date_due" string="Due"/>
+                <field name="ref" string="Reference"/>
+                <field name="name" string="Invoice"/>
+                <field name="amount_total" string="Amount" sum="Scheduled"/>
+                <field name="amount_residual" string="Outstanding" sum="Outstanding"/>
+                <field name="state" string="Entry"/>
+                <field name="payment_state" string="Payment" widget="badge"
+                       decoration-success="payment_state in ('paid','in_payment')"
+                       decoration-warning="payment_state == 'partial'"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="invoice_date" column_invisible="1"/>
+              </list>
+            </field>
+            <p class="text-muted mt-2">
+              Each row is one charge on its own Odoo invoice — rent falls due monthly or quarterly,
+              while a deposit, administration fee or commission is normally a single charge at the
+              start. Open a row to see its lines, journal entries and cheques.
+            </p>
+          </page>
+        </notebook>
+      </xpath>
+    </field>
+  </record>
+
+  <!-- Group the rent-invoice list by contract, which the text ref could never do. -->
+  <record id="view_reax_move_search_contract" model="ir.ui.view">
+    <field name="name">account.move.search.realestateapp.contract</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="realestateapp_connector_account.view_reax_move_search"/>
+    <field name="arch" type="xml">
+      <xpath expr="//filter[@name='reax_group_partner']" position="before">
+        <field name="reax_contract_id"/>
+        <filter name="reax_group_contract" string="Contract"
+                context="{'group_by': 'reax_contract_id'}"/>
+      </xpath>
+    </field>
+  </record>
+
+  <!-- And show it on the invoice itself, so the link is visible from both ends. -->
+  <record id="view_reax_move_form_contract" model="ir.ui.view">
+    <field name="name">account.move.form.realestateapp.contract</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_move_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='ref']" position="after">
+        <field name="reax_contract_id" invisible="not reax_contract_id" readonly="1"/>
+      </xpath>
+    </field>
+  </record>
+</odoo>

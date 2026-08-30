@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'RealEstateApp Connector — Accounting',
-    'version': '18.0.1.1.0',
-    'summary': 'Shows the rent schedule RealEstateApp sends, inside the RealEstateApp app.',
+    'version': '18.0.1.2.0',
+    'summary': 'The rent schedule RealEstateApp sends, on the contract that produced it.',
     'description': """
 RealEstateApp Connector — Accounting
 ====================================
@@ -31,6 +31,7 @@ Developed by Shoaib Ahmed — Developer (ASICO), for ASICO Property Management.
     'depends': ['realestateapp_connector', 'account'],
     'data': [
         'views/move_views.xml',
+        'views/contract_views.xml',
     ],
     'installable': True,
     # Not an application in its own right — it is a bridge, and it belongs inside the connector's app
