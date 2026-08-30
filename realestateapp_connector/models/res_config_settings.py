@@ -120,79 +120,60 @@ class ResConfigSettings(models.TransientModel):
     # whole app, which is the only safe default for a visibility switch.
     reax_nav_dashboard = fields.Boolean(
         string='Dashboard', default=True,
-        config_parameter='realestateapp.nav.dashboard',
         help='Show Dashboard in this Odoo’s RealEstateApp menu.')
     reax_nav_properties = fields.Boolean(
         string='Properties', default=True,
-        config_parameter='realestateapp.nav.properties',
         help='Show Properties in this Odoo’s RealEstateApp menu.')
     reax_nav_units = fields.Boolean(
         string='Units', default=True,
-        config_parameter='realestateapp.nav.units',
         help='Show Units in this Odoo’s RealEstateApp menu.')
     reax_nav_leads = fields.Boolean(
         string='Leads', default=True,
-        config_parameter='realestateapp.nav.leads',
         help='Show Leads in this Odoo’s RealEstateApp menu.')
     reax_nav_requests = fields.Boolean(
         string='Leasing Requests', default=True,
-        config_parameter='realestateapp.nav.requests',
         help='Show Leasing Requests in this Odoo’s RealEstateApp menu.')
     reax_nav_bookings = fields.Boolean(
         string='Bookings', default=True,
-        config_parameter='realestateapp.nav.bookings',
         help='Show Bookings in this Odoo’s RealEstateApp menu.')
     reax_nav_contracts = fields.Boolean(
         string='Contracts', default=True,
-        config_parameter='realestateapp.nav.contracts',
         help='Show Contracts in this Odoo’s RealEstateApp menu.')
     reax_nav_renewals = fields.Boolean(
         string='Renewals', default=True,
-        config_parameter='realestateapp.nav.renewals',
         help='Show Renewals in this Odoo’s RealEstateApp menu.')
     reax_nav_accounts = fields.Boolean(
         string='Accounts', default=True,
-        config_parameter='realestateapp.nav.accounts',
         help='Show Accounts in this Odoo’s RealEstateApp menu.')
     reax_nav_legal = fields.Boolean(
         string='Legal Cases', default=True,
-        config_parameter='realestateapp.nav.legal',
         help='Show Legal Cases in this Odoo’s RealEstateApp menu.')
     reax_nav_maintenance = fields.Boolean(
         string='Maintenance', default=True,
-        config_parameter='realestateapp.nav.maintenance',
         help='Show Maintenance in this Odoo’s RealEstateApp menu.')
     reax_nav_amc = fields.Boolean(
         string='AMC Contracts', default=True,
-        config_parameter='realestateapp.nav.amc',
         help='Show AMC Contracts in this Odoo’s RealEstateApp menu.')
     reax_nav_assets = fields.Boolean(
         string='Assets', default=True,
-        config_parameter='realestateapp.nav.assets',
         help='Show Assets in this Odoo’s RealEstateApp menu.')
     reax_nav_inspections = fields.Boolean(
         string='Inspections', default=True,
-        config_parameter='realestateapp.nav.inspections',
         help='Show Inspections in this Odoo’s RealEstateApp menu.')
     reax_nav_contacts = fields.Boolean(
         string='Contacts', default=True,
-        config_parameter='realestateapp.nav.contacts',
         help='Show Contacts in this Odoo’s RealEstateApp menu.')
     reax_nav_tenants = fields.Boolean(
         string='Tenants', default=True,
-        config_parameter='realestateapp.nav.tenants',
         help='Show Tenants in this Odoo’s RealEstateApp menu.')
     reax_nav_landlords = fields.Boolean(
         string='Landlords', default=True,
-        config_parameter='realestateapp.nav.landlords',
         help='Show Landlords in this Odoo’s RealEstateApp menu.')
     reax_nav_vendors = fields.Boolean(
         string='Vendors', default=True,
-        config_parameter='realestateapp.nav.vendors',
         help='Show Vendors in this Odoo’s RealEstateApp menu.')
     reax_nav_staff = fields.Boolean(
         string='Staff', default=True,
-        config_parameter='realestateapp.nav.staff',
         help='Show Staff in this Odoo’s RealEstateApp menu.')
 
     # ---- what this instance can actually offer ----------------------------------------------------
@@ -395,9 +376,28 @@ class ResConfigSettings(models.TransientModel):
             },
         }
 
+    def get_values(self):
+        """Read the nineteen switches from the parameters rather than from Odoo's config_parameter
+        plumbing, which cannot store an explicit "off" — see reax_nav._enabled."""
+        res = super().get_values()
+        nav = self.env['reax.nav']
+        for field, _xmlid, _label in REAX_NAV_ITEMS:
+            res[field] = nav._enabled(field)
+        return res
+
     def set_values(self):
-        """Standard Odoo save, then make the menus match what was just ticked."""
+        """Write 'True'/'False' as literal strings, then make the menus match.
+
+        Not config_parameter=: Odoo's set_param DELETES a row whose value is False, so an unticked
+        box would be indistinguishable from one nobody had ever touched — and since absent has to
+        mean "show it" (a customer who never opens this screen must see the whole app), unticking
+        would silently undo itself on the next load.
+        """
         res = super().set_values()
+        params = self.env['ir.config_parameter'].sudo()
+        for field, _xmlid, _label in REAX_NAV_ITEMS:
+            params.set_param(PARAM_PREFIX + field[len('reax_nav_'):],
+                             'True' if self[field] else 'False')
         self.env['reax.nav']._apply()
         return res
 

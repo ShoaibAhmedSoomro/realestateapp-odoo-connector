@@ -55,6 +55,22 @@ REAX_NAV_ITEMS = (
 )
 
 
+def nav_enabled(raw):
+    """Is a module enabled, given whatever ir.config_parameter handed back?
+
+    Pure, and separate from the model, so the truth table can be checked without an Odoo running —
+    which is the whole reason this exists. The version before it took `raw is None or raw == ''` to
+    mean "unset". Odoo returns Python **False** for an unset key, which is neither of those, so every
+    unconfigured module fell through to (False == 'True') and came out hidden. Nineteen menus went
+    dark on a live install.
+
+        get_param -> False   (never set)      -> True,  show it
+        get_param -> 'True'                   -> True,  show it
+        get_param -> 'False' (deliberately)   -> False, hide it
+    """
+    return True if not raw else str(raw) == 'True'
+
+
 class ReaxNav(models.AbstractModel):
     """The apply half, on its own so both the settings page and the registry hook can call it."""
     _name = 'reax.nav'
@@ -66,10 +82,26 @@ class ReaxNav(models.AbstractModel):
 
     @api.model
     def _enabled(self, field):
-        """Default ON. A customer who has never opened this screen must see the whole app, not none
-        of it — an absent parameter means "not configured", never "switch everything off"."""
-        raw = self.env['ir.config_parameter'].sudo().get_param(self._param(field))
-        return True if raw is None or raw == '' else raw == 'True'
+        """Default ON, and getting this wrong hides the entire app.
+
+        Odoo's get_param returns Python **False** for a key that is not set — not None, not ''. An
+        earlier version tested `raw is None or raw == ''`, which False satisfies neither of, so every
+        unconfigured module fell through to (False == 'True') and came out HIDDEN. It switched off
+        all nineteen menus on a live install. The docstring said "default ON" and the code did the
+        opposite of what it said, which is why this now tests truthiness and nothing else.
+
+        The other half of the trap: set_param(key, False) DELETES the row, so an explicit "off"
+        cannot be stored as a Python False. set_values below writes the literal strings 'True' and
+        'False' instead, which is what makes "never configured" and "deliberately off" different
+        things rather than the same absent row.
+        """
+        return nav_enabled(self.env['ir.config_parameter'].sudo().get_param(self._param(field)))
+
+    @api.model
+    def reax_apply_navigation(self):
+        """Public wrapper. _apply starts with an underscore, so Odoo refuses to call it over RPC —
+        which is correct, and this is the door for the check that has to."""
+        return self._apply()
 
     @api.model
     def _apply(self):
