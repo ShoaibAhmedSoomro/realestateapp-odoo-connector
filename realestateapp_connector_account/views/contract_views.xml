@@ -93,6 +93,48 @@
       <xpath expr="//field[@name='ref']" position="after">
         <field name="reax_contract_id" invisible="not reax_contract_id" readonly="1"/>
       </xpath>
+
+      <!-- The rest of the contract's charges, on the invoice, because that is where people are
+           already standing when they ask "where are the others?". They are NOT lines of this
+           invoice and must never be: an invoice's lines have to sum to its own total, so a rent
+           invoice carrying the deposit and commission as lines would claim the contract's whole
+           value and post that into the books. They are sibling invoices, shown as such. -->
+      <xpath expr="//notebook" position="inside">
+        <page string="Contract Schedule" name="reax_contract_schedule"
+              invisible="not reax_contract_id">
+          <group>
+            <group>
+              <field name="company_currency_id" invisible="1"/>
+              <field name="reax_schedule_total"/>
+              <field name="reax_schedule_paid"/>
+            </group>
+            <group>
+              <field name="reax_schedule_due"/>
+            </group>
+          </group>
+          <field name="reax_schedule_ids" nolabel="1" readonly="1">
+            <list decoration-success="payment_state in ('paid','in_payment')"
+                  decoration-muted="state == 'cancel'"
+                  decoration-danger="state == 'posted' and payment_state == 'not_paid' and invoice_date_due &lt; current_date">
+              <field name="invoice_date_due" string="Due"/>
+              <field name="ref" string="Charge"/>
+              <field name="name" string="Invoice"/>
+              <field name="amount_total" string="Amount" sum="Scheduled"/>
+              <field name="amount_residual" string="Outstanding" sum="Outstanding"/>
+              <field name="payment_state" string="Payment" widget="badge"
+                     decoration-success="payment_state in ('paid','in_payment')"
+                     decoration-warning="payment_state == 'partial'"/>
+              <field name="currency_id" column_invisible="1"/>
+              <field name="state" column_invisible="1"/>
+            </list>
+          </field>
+          <p class="text-muted mt-2">
+            Every charge on this tenancy, each on its own invoice — this one included. Rent falls due
+            monthly or quarterly; a deposit, administration fee or commission is normally a single
+            charge at the start. Open a row to go to that invoice and its cheque.
+          </p>
+        </page>
+      </xpath>
     </field>
   </record>
 </odoo>

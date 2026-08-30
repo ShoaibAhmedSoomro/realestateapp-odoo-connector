@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'RealEstateApp Connector — Accounting',
-    'version': '18.0.1.2.1',
+    'version': '18.0.1.3.0',
     'summary': 'The rent schedule RealEstateApp sends, on the contract that produced it.',
     'description': """
 RealEstateApp Connector — Accounting

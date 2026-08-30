@@ -25,6 +25,26 @@ class AccountMove(models.Model):
         compute='_compute_reax_contract_id', store=True, readonly=False,
         help='The RealEstateApp tenancy contract this instalment belongs to.')
 
+
+    # THE WHOLE SCHEDULE, VISIBLE FROM ANY ONE OF ITS INVOICES.
+    #
+    # An invoice's own lines cannot show the other charges, and should not: they must sum to THIS
+    # invoice's total. Putting the deposit and commission into a rent invoice's lines would make it
+    # claim the contract's whole value and post that into the books. So the siblings appear as what
+    # they are — other invoices — on a tab of their own, read-only. Same records as the contract's
+    # Payment Schedule, reached from wherever somebody happens to be standing.
+    reax_schedule_ids = fields.One2many(
+        related='reax_contract_id.invoice_ids', string='Contract Schedule', readonly=True)
+    reax_schedule_total = fields.Monetary(
+        related='reax_contract_id.invoice_total', string='Contract Scheduled', readonly=True,
+        currency_field='company_currency_id')
+    reax_schedule_paid = fields.Monetary(
+        related='reax_contract_id.invoice_paid', string='Contract Settled', readonly=True,
+        currency_field='company_currency_id')
+    reax_schedule_due = fields.Monetary(
+        related='reax_contract_id.invoice_due', string='Contract Outstanding', readonly=True,
+        currency_field='company_currency_id')
+
     @api.depends('ref')
     def _compute_reax_contract_id(self):
         """Adopt older invoices from the reference they already carry.
