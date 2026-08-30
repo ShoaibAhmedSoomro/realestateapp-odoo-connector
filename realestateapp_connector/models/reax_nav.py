@@ -106,7 +106,6 @@ class ReaxNav(models.AbstractModel):
     @api.model
     def _apply(self):
         """Make the menus match the setting. Cheap, idempotent, and safe to call on every load."""
-        menus = self.env['ir.ui.menu'].sudo()
         changed = 0
         for field, xmlid, _label in REAX_NAV_ITEMS:
             menu = self.env.ref(xmlid, raise_if_not_found=False)
@@ -118,7 +117,10 @@ class ReaxNav(models.AbstractModel):
                 changed += 1
         if changed:
             # The menu tree is cached per user; without this the change appears only after a reload.
-            menus.clear_caches() if hasattr(menus, 'clear_caches') else self.env.registry.clear_cache()
+            # registry.clear_cache() and not menus.clear_caches(): the model-level helper was removed
+            # in Odoo 18, so the hasattr this used to guard on could only ever be false — a branch
+            # that read as a compatibility shim and was in fact dead code.
+            self.env.registry.clear_cache()
             _logger.info('RealEstateApp: navigation updated, %s menu(s) changed', changed)
         return changed
 
