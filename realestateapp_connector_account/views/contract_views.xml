@@ -28,14 +28,15 @@
         <field name="invoice_count" widget="statinfo" string="Charges"/>
       </xpath>
 
-      <!-- The money summary belongs next to the rent, where somebody is already looking. -->
-      <xpath expr="//group[@string='Money']" position="inside">
-        <group>
-          <field name="company_currency_id" invisible="1"/>
-          <field name="invoice_total" widget="monetary"/>
-          <field name="invoice_paid" widget="monetary"/>
-          <field name="invoice_due" widget="monetary"/>
-        </group>
+      <!-- The money summary belongs next to the rent, where somebody is already looking.
+           Anchored on a FIELD, not on a group's label: Odoo 17+ refuses `string` as an inheritance
+           selector ("View inheritance may not use attribute 'string' as a selector"), and a label is
+           the wrong thing to depend on anyway — it is translated, and somebody may reword it. -->
+      <xpath expr="//field[@name='vat_on_rent']" position="after">
+        <field name="company_currency_id" invisible="1"/>
+        <field name="invoice_total" widget="monetary"/>
+        <field name="invoice_paid" widget="monetary"/>
+        <field name="invoice_due" widget="monetary"/>
       </xpath>
 
       <xpath expr="//sheet" position="inside">
