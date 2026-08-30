@@ -69,6 +69,70 @@
             </setting>
           </block>
 
+          <!--
+            WHICH SCREENS APPEAR UNDER REALESTATEAPP.
+
+            Grouped exactly as the menu is, so a person ticking boxes here recognises what they are
+            looking at. Untick both Properties and Units and the whole Property Mgmt. section goes —
+            Odoo hides a parent whose children are all hidden, which is why the sections themselves
+            are not listed as separate switches.
+
+            This is NAVIGATION, not permission. What a person may open is decided by their Odoo
+            groups, exactly as before; this decides what is offered. Both have to allow it.
+          -->
+          <block title="Modules" name="reax_modules"
+                 help="Choose which parts of RealEstateApp appear in this Odoo's menu.">
+            <setting string="Property Management" help="Tick the screens you want under RealEstateApp.">
+              <div class="content-group mt-2">
+                <div><field name="reax_nav_properties" class="oe_inline"/> <span class="ms-1">Properties</span></div>
+                <div><field name="reax_nav_units" class="oe_inline"/> <span class="ms-1">Units</span></div>
+              </div>
+            </setting>
+            <setting string="Leasing" help="Tick the screens you want under RealEstateApp.">
+              <div class="content-group mt-2">
+                <div><field name="reax_nav_leads" class="oe_inline"/> <span class="ms-1">Leads</span></div>
+                <div><field name="reax_nav_requests" class="oe_inline"/> <span class="ms-1">Leasing Requests</span></div>
+                <div><field name="reax_nav_bookings" class="oe_inline"/> <span class="ms-1">Bookings</span></div>
+                <div><field name="reax_nav_contracts" class="oe_inline"/> <span class="ms-1">Contracts</span></div>
+                <div><field name="reax_nav_renewals" class="oe_inline"/> <span class="ms-1">Renewals</span></div>
+              </div>
+            </setting>
+            <setting string="Accounts and Legal" help="Tick the screens you want under RealEstateApp.">
+              <div class="content-group mt-2">
+                <div><field name="reax_nav_accounts" class="oe_inline"/> <span class="ms-1">Accounts</span></div>
+                <div><field name="reax_nav_legal" class="oe_inline"/> <span class="ms-1">Legal Cases</span></div>
+              </div>
+            </setting>
+            <setting string="Operations" help="Tick the screens you want under RealEstateApp.">
+              <div class="content-group mt-2">
+                <div><field name="reax_nav_maintenance" class="oe_inline"/> <span class="ms-1">Maintenance</span></div>
+                <div><field name="reax_nav_amc" class="oe_inline"/> <span class="ms-1">AMC Contracts</span></div>
+                <div><field name="reax_nav_assets" class="oe_inline"/> <span class="ms-1">Assets</span></div>
+                <div><field name="reax_nav_inspections" class="oe_inline"/> <span class="ms-1">Inspections</span></div>
+              </div>
+            </setting>
+            <setting string="People" help="Tick the screens you want under RealEstateApp.">
+              <div class="content-group mt-2">
+                <div><field name="reax_nav_contacts" class="oe_inline"/> <span class="ms-1">Contacts</span></div>
+                <div><field name="reax_nav_tenants" class="oe_inline"/> <span class="ms-1">Tenants</span></div>
+                <div><field name="reax_nav_landlords" class="oe_inline"/> <span class="ms-1">Landlords</span></div>
+                <div><field name="reax_nav_vendors" class="oe_inline"/> <span class="ms-1">Vendors</span></div>
+                <div><field name="reax_nav_staff" class="oe_inline"/> <span class="ms-1">Staff</span></div>
+              </div>
+            </setting>
+            <setting string="Overview" help="Tick the screens you want under RealEstateApp.">
+              <div class="content-group mt-2">
+                <div><field name="reax_nav_dashboard" class="oe_inline"/> <span class="ms-1">Dashboard</span></div>
+              </div>
+            </setting>
+            <setting string="Show everything again"
+                     help="Puts every RealEstateApp screen back in the menu.">
+              <button name="action_reax_nav_all" type="object" string="Enable all modules"
+                      class="btn-secondary"/>
+            </setting>
+          </block>
+
+
           <!-- Worked out from this database, not written down here.
                The old version was a hand-typed list of two items that claimed "it never writes back" —
                untrue the moment the app started sending tenants and landlords, and a screen that lies
