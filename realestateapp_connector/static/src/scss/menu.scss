@@ -1,12 +1,13 @@
 // THE APP DRAWER, WHEN THE APP HAS A LOT OF MENUS.
 //
-// This is not our markup. The drawer belongs to spiffy_theme_backend, and two of its decisions make
-// RealEstateApp — eight sections, twenty-six menus, the largest menu in this Odoo — hard to use.
+// This is not our markup. The drawer belongs to spiffy_theme_backend, and three of its decisions
+// make RealEstateApp — eight sections, twenty-six menus, the largest menu in this Odoo — awkward or
+// unusable.
 //
 // Everything here is anchored on this app's own menu xmlid. A theme belongs to the customer and to
 // every other app in their Odoo, and a connector has no business changing how Sales or Inventory
-// look. The real fixes belong in spiffy_theme_backend; these stop its choices making our app
-// unusable while that stays somebody else's to make.
+// look. The real fixes belong in spiffy_theme_backend; these stop its choices getting in the way
+// while that stays somebody else's to make.
 
 // 1. A SECTION OBEYS ITS OWN TOGGLE.
 //
@@ -25,30 +26,48 @@
   }
 }
 
-// 2. THE SPACING, WHICH NEEDS !important TO REACH AT ALL.
+// 2. THE GAP BELOW THE HEADER, WHICH ONLY EXISTS ON A NEUTRALIZED DATABASE.
 //
-//    The theme sets these with !important and a long selector:
+//    The theme's own base rule places the flyout at `top: 0`, which is right. Then:
+//
+//        .oe_neutralize_banner_active + header … .header-sub-menus {
+//          top: calc(70px + 24px) !important;
+//        }
+//
+//    When the "Database neutralized for testing" banner is present it pushes the drawer down by the
+//    header (70px) AND the banner (24px) — but the banner is a SIBLING ABOVE the header, so the
+//    header and the nav have already moved down by exactly that much. It is counted twice, and the
+//    94px lands as dead space between the header and the top of the drawer. It also pushes the
+//    bottom 94px off-screen, because `height` stays calc(100vh - 70px).
+//
+//    Back to the value the theme itself uses everywhere else. Specificity is (1,6,3) against their
+//    (1,6,2), with !important on both, so this wins by one element rather than by shouting.
+//
+//    A production Odoo has no banner, so that rule never matches and none of this applies there.
+body.o_web_client .oe_neutralize_banner_active + header .o_main_navbar .o_navbar_apps_menu #accordion
+  .header-sub-menus:has(a[data-menu-xmlid^='realestateapp_connector.']) {
+  top: 0 !important;
+}
+
+// 3. THE SPACING, WHICH NEEDS !important TO REACH AT ALL.
+//
+//    The theme sets these with !important on long selectors:
 //
 //        … .o_navbar_apps_menu > ul > li ul .child_menus { padding: 0.5rem 0 !important; }
 //        … #accordion .header-sub-menus p.bg-muted      { padding: 6px 16px !important; }
 //
-//    A first attempt used plain declarations on a shorter selector and was overridden outright —
-//    it compiled, shipped, and changed nothing on screen. Matching their prefix and their
-//    !important is what makes these apply; without both they are decoration.
+//    A first attempt used plain declarations on a shorter selector and was overridden outright — it
+//    compiled, shipped, upgraded cleanly and changed nothing on screen. Matching their prefix and
+//    their !important is what makes these apply; without both they are decoration.
 //
-//    The figures are chosen against the touch target, not for tightness: 0.3rem top and bottom on a
-//    line-height of about 1.5rem leaves roughly 33px, and the row still spans the full width, so it
-//    stays comfortably usable with a finger.
+//    Sizes chosen against the touch target, not for tightness: 0.3rem on a 1.5rem line-height leaves
+//    about 33px and the row spans the full width, so it stays usable with a finger.
+//
+//    Nothing here sets height or overflow: the theme already gives the flyout
+//    `height: calc(100vh - 70px)` and `overflow: auto`, and with rule 2 putting it back at the top
+//    that is correct on its own. An earlier version added a max-height that only fought it.
 body.o_web_client .o_main_navbar .o_navbar_apps_menu #accordion
   .header-sub-menus:has(a[data-menu-xmlid^='realestateapp_connector.']) {
-
-  // A long list scrolls rather than running off the bottom of the screen. Capped against the
-  // viewport, not a fixed pixel figure, so it holds on a laptop and on a large monitor.
-  max-height: calc(100vh - 8rem) !important;
-  overflow-y: auto !important;
-  overscroll-behavior: contain;
-  padding-top: 0.25rem !important;
-  padding-bottom: 0.25rem !important;
 
   .nav-item > a.child_menus {
     padding: 0.3rem 0 !important;
