@@ -169,13 +169,20 @@ class ReaxSyncRunLine(models.Model):
             # The words under the progress line: what is being done, not just to what.
             l.action_label = 'Sending' if l.direction == 'push' else 'Fetching'
 
-    @api.depends('checked', 'found')
+    @api.depends('checked', 'found', 'state')
     def _compute_progress(self):
         for l in self:
             # Nine push data sets have no count(), so `found` is genuinely unknown. Those show a
             # running count and NO bar — a bar needs a denominator and inventing one is a lie.
             l.has_total = l.found > 0
-            l.percent = min(100.0, (l.checked / l.found) * 100.0) if l.found > 0 else 0.0
+            if l.state == 'done' and l.found > 0:
+                # FINISHED IS FINISHED. A lane can complete having touched almost nothing — the
+                # invoice lane drains its frontier and reports 0 of 32,652 because every record was
+                # already up to date and never needed examining. Showing that as 0% said "nothing
+                # happened" about work that was done. The engine calling it done IS the fact here.
+                l.percent = 100.0
+            else:
+                l.percent = min(100.0, (l.checked / l.found) * 100.0) if l.found > 0 else 0.0
 
 
 class ReaxSyncActivity(models.Model):
