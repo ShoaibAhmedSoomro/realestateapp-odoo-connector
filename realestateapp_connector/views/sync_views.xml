@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!--
+    SYNCHRONISATION AND ACTIVITY.
+
+    Ordinary Odoo list and form views, on purpose. Pagination, sorting, search, filters, grouping and
+    export all come with them, already familiar to anyone who uses Odoo — none of it hand-built, and
+    none of it able to drift from what the records actually say.
+
+    Everything on these screens is written by RealEstateApp as the synchronisation runs. There is no
+    animation anywhere: a bar that is not moving means the work is not moving.
+  -->
+
+  <!-- ============================ SYNCHRONISATIONS ============================ -->
+  <record id="view_reax_sync_run_list" model="ir.ui.view">
+    <field name="name">reax.sync.run.list</field>
+    <field name="model">reax.sync.run</field>
+    <field name="arch" type="xml">
+      <list decoration-success="state == 'completed'"
+            decoration-warning="state == 'partial'"
+            decoration-danger="state in ('failed','cancelled')"
+            decoration-info="state in ('running','preparing','queued')">
+        <field name="started_at" string="Started"/>
+        <field name="doing" string="Currently"/>
+        <field name="direction"/>
+        <field name="trigger" string="Started by"/>
+        <field name="checked" string="Processed" sum="Processed"/>
+        <field name="created" sum="Created"/>
+        <field name="updated" sum="Updated"/>
+        <field name="failed" sum="Failed"/>
+        <field name="elapsed" string="Running for"/>
+        <field name="state" widget="badge"
+               decoration-success="state == 'completed'"
+               decoration-warning="state == 'partial'"
+               decoration-danger="state in ('failed','cancelled')"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_reax_sync_run_form" model="ir.ui.view">
+    <field name="name">reax.sync.run.form</field>
+    <field name="model">reax.sync.run</field>
+    <field name="arch" type="xml">
+      <form create="false" edit="false">
+        <header>
+          <field name="state" widget="statusbar"
+                 statusbar_visible="queued,running,completed"/>
+          <button name="action_reax_open_activity" type="object" string="View activity"
+                  class="btn-secondary"/>
+        </header>
+        <sheet>
+          <div class="oe_title">
+            <h1><field name="display_title" readonly="1"/></h1>
+            <h3 class="text-muted"><field name="doing" readonly="1"/></h3>
+          </div>
+          <group>
+            <group string="This run">
+              <field name="direction"/>
+              <field name="trigger" string="Started by"/>
+              <field name="started_at"/>
+              <field name="progress_at" string="Last update"/>
+              <field name="finished_at" invisible="not finished_at"/>
+              <field name="elapsed" string="Running for"/>
+            </group>
+            <group string="Records">
+              <field name="total" invisible="not has_total"/>
+              <field name="checked" string="Processed"/>
+              <!-- Only where a total is genuinely known. Nine data sets have no count(), and a bar
+                   without a denominator would be a picture rather than a measurement. -->
+              <field name="percent" widget="progressbar" invisible="not has_total"/>
+              <field name="remaining" invisible="not has_total"/>
+              <field name="has_total" invisible="1"/>
+              <field name="created"/>
+              <field name="updated"/>
+              <field name="skipped" string="Unchanged"/>
+              <field name="failed"/>
+            </group>
+          </group>
+          <field name="message" readonly="1" invisible="not message"/>
+          <notebook>
+            <page string="Modules" name="modules">
+              <field name="line_ids" nolabel="1" readonly="1">
+                <list decoration-muted="state == 'waiting'" decoration-info="state == 'running'"
+                      decoration-success="state == 'done'">
+                  <field name="module_label" string="Module"/>
+                  <field name="action_label" string="Doing"/>
+                  <field name="direction"/>
+                  <field name="checked" string="Processed"/>
+                  <field name="found" string="Total"/>
+                  <field name="percent" widget="progressbar" string="Progress"/>
+                  <field name="created"/>
+                  <field name="updated"/>
+                  <field name="skipped" string="Unchanged"/>
+                  <field name="failed"/>
+                  <field name="state" widget="badge" string="Status"
+                         decoration-success="state == 'done'" decoration-info="state == 'running'"/>
+                  <field name="has_total" column_invisible="1"/>
+                </list>
+              </field>
+              <p class="text-muted mt-2">
+                A module with no Total has no count defined in RealEstateApp, so the number of
+                records is not known in advance — it shows what has been processed so far rather
+                than a percentage of a figure nobody has.
+              </p>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_reax_sync_run_search" model="ir.ui.view">
+    <field name="name">reax.sync.run.search</field>
+    <field name="model">reax.sync.run</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="app_run_id" string="Run number"/>
+        <field name="trigger"/>
+        <filter name="running" string="In progress"
+                domain="[('state','in',['queued','preparing','running','paused'])]"/>
+        <filter name="failed" string="Failed or with errors"
+                domain="[('state','in',['failed','partial','cancelled'])]"/>
+        <filter name="done" string="Completed" domain="[('state','=','completed')]"/>
+        <separator/>
+        <filter name="today" string="Today"
+                domain="[('started_at','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+        <group expand="0" string="Group By">
+          <filter name="by_state" string="Status" context="{'group_by':'state'}"/>
+          <filter name="by_trigger" string="Started by" context="{'group_by':'trigger'}"/>
+          <filter name="by_day" string="Day" context="{'group_by':'started_at:day'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_reax_sync_runs" model="ir.actions.act_window">
+    <field name="name">Synchronisations</field>
+    <field name="res_model">reax.sync.run</field>
+    <field name="view_mode">list,form</field>
+    <field name="search_view_id" ref="view_reax_sync_run_search"/>
+    <field name="context">{'search_default_running': 1}</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">No synchronisation has run yet</p>
+      <p>
+        Each run RealEstateApp performs appears here while it happens and stays afterwards, with what
+        it processed and anything that failed. You can close this page — the work does not depend on
+        it being open.
+      </p>
+    </field>
+  </record>
+
+  <!-- ================================ ACTIVITY ================================ -->
+  <record id="view_reax_sync_activity_list" model="ir.ui.view">
+    <field name="name">reax.sync.activity.list</field>
+    <field name="model">reax.sync.activity</field>
+    <field name="arch" type="xml">
+      <list decoration-danger="status == 'error'" create="false" edit="false">
+        <field name="occurred_at" string="When"/>
+        <field name="module_label" string="Module"/>
+        <field name="record_name" string="Record"/>
+        <field name="direction"/>
+        <field name="operation"/>
+        <field name="status" widget="badge" string="Result"
+               decoration-success="status == 'ok'" decoration-danger="status == 'error'"/>
+        <field name="message" string="Detail" optional="show"/>
+        <field name="trigger" string="Started by" optional="hide"/>
+        <field name="record_ref" string="RealEstateApp id" optional="hide"/>
+        <field name="external_ref" string="Odoo id" optional="hide"/>
+        <field name="run_id" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_reax_sync_activity_search" model="ir.ui.view">
+    <field name="name">reax.sync.activity.search</field>
+    <field name="model">reax.sync.activity</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="record_name" string="Record"
+               filter_domain="['|','|',('record_name','ilike',self),('record_ref','=',self),('message','ilike',self)]"/>
+        <field name="module" string="Module"/>
+        <field name="run_id"/>
+        <separator/>
+        <filter name="ok" string="Successful" domain="[('status','=','ok')]"/>
+        <filter name="error" string="Failed" domain="[('status','=','error')]"/>
+        <separator/>
+        <filter name="created" string="Created" domain="[('operation','=','created')]"/>
+        <filter name="updated" string="Updated" domain="[('operation','=','updated')]"/>
+        <filter name="retried" string="Retried" domain="[('operation','=','retried')]"/>
+        <separator/>
+        <filter name="to_odoo" string="RealEstateApp → Odoo" domain="[('direction','=','push')]"/>
+        <filter name="to_app" string="Odoo → RealEstateApp" domain="[('direction','=','pull')]"/>
+        <separator/>
+        <filter name="today" string="Today"
+                domain="[('occurred_at','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+        <filter name="week" string="Last 7 days"
+                domain="[('occurred_at','&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+        <group expand="0" string="Group By">
+          <filter name="by_module" string="Module" context="{'group_by':'module_label'}"/>
+          <filter name="by_operation" string="Operation" context="{'group_by':'operation'}"/>
+          <filter name="by_status" string="Result" context="{'group_by':'status'}"/>
+          <filter name="by_direction" string="Direction" context="{'group_by':'direction'}"/>
+          <filter name="by_day" string="Day" context="{'group_by':'occurred_at:day'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_reax_sync_activity" model="ir.actions.act_window">
+    <field name="name">Synchronisation Activity</field>
+    <field name="res_model">reax.sync.activity</field>
+    <field name="view_mode">list</field>
+    <field name="search_view_id" ref="view_reax_sync_activity_search"/>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">Nothing has been synchronised yet</p>
+      <p>
+        Every record RealEstateApp creates, updates or fails to send appears here. Records that were
+        already up to date are not listed — on a book of thirty thousand invoices almost every pass
+        changes nothing, and logging that would bury what did happen.
+      </p>
+    </field>
+  </record>
+
+  <menuitem id="menu_reax_sync_runs" name="Synchronisations"
+            parent="menu_reax_config" action="action_reax_sync_runs" sequence="20"/>
+  <menuitem id="menu_reax_sync_activity" name="Activity Log"
+            parent="menu_reax_config" action="action_reax_sync_activity" sequence="30"/>
+</odoo>

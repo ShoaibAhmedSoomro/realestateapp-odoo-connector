@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'RealEstateApp Connector',
-    'version': '18.0.6.3.1',
+    'version': '18.0.6.4.0',
     'summary': 'Connect this Odoo to RealEstateApp in one click — no API keys to copy by hand.',
     'description': """
 RealEstateApp Connector
@@ -55,6 +55,9 @@ Developed by Shoaib Ahmed — Developer (ASICO), for ASICO Property Management.
         'views/dashboard_views.xml',
         'views/menus.xml',
         'views/option_views.xml',
+        # After menus.xml: its menuitems hang off menu_reax_config, and Odoo resolves a ref
+        # at load time against what it has already loaded.
+        'views/sync_views.xml',
     ],
     # Two explicit paths, never a glob. A glob would sweep settings.dark.scss into the light bundle and
     # then need a ('remove', …) directive to pull it back out — and `remove` naming a path that is not in

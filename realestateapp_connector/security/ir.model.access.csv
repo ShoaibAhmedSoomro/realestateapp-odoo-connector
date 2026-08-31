@@ -27,3 +27,9 @@ access_reax_dashboard_user,reax.dashboard user,model_reax_dashboard,base.group_u
 access_reax_dashboard_system,reax.dashboard system,model_reax_dashboard,base.group_system,1,1,1,1
 access_reax_option_user,reax.option user,model_reax_option,base.group_user,1,0,0,0
 access_reax_option_system,reax.option system,model_reax_option,base.group_system,1,1,1,1
+access_reax_sync_run_user,reax.sync.run user,model_reax_sync_run,base.group_user,1,0,0,0
+access_reax_sync_run_system,reax.sync.run system,model_reax_sync_run,base.group_system,1,1,1,1
+access_reax_sync_run_line_user,reax.sync.run.line user,model_reax_sync_run_line,base.group_user,1,0,0,0
+access_reax_sync_run_line_system,reax.sync.run.line system,model_reax_sync_run_line,base.group_system,1,1,1,1
+access_reax_sync_activity_user,reax.sync.activity user,model_reax_sync_activity,base.group_user,1,0,0,0
+access_reax_sync_activity_system,reax.sync.activity system,model_reax_sync_activity,base.group_system,1,1,1,1
