@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'RealEstateApp Connector',
-    'version': '18.0.6.5.1',
+    'version': '18.0.6.5.2',
     'summary': 'Connect this Odoo to RealEstateApp in one click — no API keys to copy by hand.',
     'description': """
 RealEstateApp Connector
