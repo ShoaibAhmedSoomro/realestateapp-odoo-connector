@@ -1,0 +1,53 @@
+// THE APP DRAWER, WHEN THE APP HAS A LOT OF MENUS.
+//
+// This is not our markup. The drawer belongs to spiffy_theme_backend, and it renders every section
+// with its trigger saying one thing and its panel saying another:
+//
+//     <a class="… collapsed" aria-expanded="false">Property Mgmt.</a>   <- collapsed
+//     <div class="collapse show" id="child_menu_531">                    <- shown
+//
+// So every section is open whatever its toggle claims. On a small app nobody notices. RealEstateApp
+// has eight sections and twenty-six menus, so the list runs past the bottom of the screen and the
+// items at the end cannot be reached at all.
+//
+// Two rules, both scoped to THIS app's menus by their xmlid — a theme belongs to the customer and to
+// every other app in their Odoo, and a connector has no business changing how Sales or Inventory
+// look. The real fix belongs in spiffy_theme_backend; this stops its bug making our app unusable
+// while that is somebody else's to make.
+
+// 1. A SECTION OBEYS ITS OWN TOGGLE.
+//    Where the trigger says collapsed, the panel is closed — which is what the trigger, the arrow
+//    and aria-expanded were all already telling the user. The moment Bootstrap removes `collapsed`
+//    on a click this rule stops matching and the section opens normally, so the interaction is
+//    untouched: only the disagreement is resolved, and in the direction the theme itself intended.
+.header-sub-menus li:has(> p > a[data-menu-xmlid^='realestateapp_connector.']) {
+  > p > a.collapsed + *,
+  > p:has(> a.collapsed) + .collapse.show {
+    display: none;
+  }
+}
+
+// 2. A LONG LIST SCROLLS INSTEAD OF BEING CUT OFF.
+//    Belt to the braces above: with everything collapsed the list fits, but a person who opens
+//    several sections at once should still be able to reach the last one. Height is capped against
+//    the viewport rather than a fixed pixel figure, so it holds on a laptop and on a large screen.
+.header-sub-menus:has(a[data-menu-xmlid^='realestateapp_connector.']) {
+  max-height: calc(100vh - 8rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  // The theme spaces items for a menu of five. Ours has twenty-six, and the padding alone pushed
+  // the last four off-screen. Tightened only here, and only enough to fit — still comfortably
+  // above the 44px touch target a finger needs.
+  .nav-item > a.child_menus {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+    min-height: 2.25rem;
+  }
+  .nav-item > p {
+    margin-bottom: 0.15rem;
+  }
+  ul {
+    margin-bottom: 0.25rem;
+  }
+}

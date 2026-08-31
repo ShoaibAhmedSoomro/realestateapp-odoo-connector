@@ -132,6 +132,62 @@
             </setting>
           </block>
 
+          <!--
+            SYNCHRONISATION AND ACTIVITY, on the same page as everything else about the connection.
+
+            Both read from records RealEstateApp writes as it works — Odoo cannot ask the app for
+            progress (no credential points that way), so the app tells Odoo. Nothing here animates:
+            a figure that is not moving means the work is not moving.
+          -->
+          <block title="Synchronisation" name="reax_sync"
+                 help="What the connector is doing now, and what it has done.">
+            <setting string="Latest run" help="Updated as the synchronisation works.">
+              <div class="content-group mt-2">
+                <span class="badge text-bg-info" invisible="not reax_sync_running">Running</span>
+                <field name="reax_sync_running" invisible="1"/>
+                <pre class="text-muted mb-2" style="white-space:pre-wrap;font-family:inherit;"><field name="reax_sync_summary" readonly="1" nolabel="1"/></pre>
+                <button name="action_reax_open_syncs" type="object" string="Open synchronisations"
+                        class="btn-secondary"/>
+              </div>
+              <p class="text-muted mt-2 mb-0">
+                No time remaining is shown, deliberately: a run pauses between batches, so a figure
+                worked out from the clock would be wrong rather than approximate.
+              </p>
+            </setting>
+          </block>
+
+          <block title="Activity" name="reax_activity"
+                 help="Every record created, updated or failed.">
+            <setting string="Activity history">
+              <div class="content-group mt-2">
+                <span><field name="reax_activity_count" readonly="1" class="oe_inline"/> records</span>
+                <div class="mt-2">
+                  <button name="action_reax_open_activity" type="object" string="Open activity log"
+                          class="btn-secondary"/>
+                </div>
+              </div>
+              <p class="text-muted mt-2 mb-0">
+                Records that were already up to date are not listed. Almost every pass over a book of
+                thirty thousand invoices changes nothing, and logging that would bury what did happen.
+              </p>
+            </setting>
+
+            <setting string="Keep history for"
+                     help="0 keeps everything. Set a number of days if your company must retain a synchronisation audit trail.">
+              <field name="reax_activity_keep_days"/> <span class="ms-1">days</span>
+            </setting>
+
+            <setting string="Clear activity history">
+              <button name="action_reax_clear_activity" type="object" string="Clear activity logs"
+                      class="btn-secondary text-danger"
+                      confirm="You are about to permanently clear the synchronisation activity history. This will NOT delete or modify any RealEstateApp or Odoo data — no property, contract, invoice, cheque or contact is affected. Do you want to continue?"/>
+              <p class="text-muted mt-2 mb-0">
+                This removes the log of what was synchronised. It never removes what was synchronised.
+              </p>
+            </setting>
+          </block>
+
+
 
           <!-- Worked out from this database, not written down here.
                The old version was a hand-typed list of two items that claimed "it never writes back" —

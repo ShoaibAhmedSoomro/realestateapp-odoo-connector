@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'RealEstateApp Connector',
-    'version': '18.0.6.4.1',
+    'version': '18.0.6.5.0',
     'summary': 'Connect this Odoo to RealEstateApp in one click — no API keys to copy by hand.',
     'description': """
 RealEstateApp Connector
@@ -68,6 +68,7 @@ Developed by Shoaib Ahmed — Developer (ASICO), for ASICO Property Management.
         'web.assets_backend': [
             'realestateapp_connector/static/src/scss/settings.scss',
             'realestateapp_connector/static/src/scss/dashboard.scss',
+            'realestateapp_connector/static/src/scss/menu.scss',
             'realestateapp_connector/static/src/js/reax_dashboard.js',
             'realestateapp_connector/static/src/xml/reax_dashboard.xml',
         ],

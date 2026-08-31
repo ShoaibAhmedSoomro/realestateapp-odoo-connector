@@ -376,6 +376,60 @@ class ResConfigSettings(models.TransientModel):
             },
         }
 
+    # ---- what the connector is doing, on the settings page itself ------------------------------
+    # Computed, never stored. These run every time ANYBODY opens Settings — for any app — so they
+    # are one cheap query each and every one is wrapped: a compute that raises takes down the whole
+    # Settings page, not just this section. The existing _compute_reax_shares learned that already.
+    reax_sync_summary = fields.Text(string='Latest synchronisation', compute='_compute_reax_sync',
+                                    readonly=True)
+    reax_sync_running = fields.Boolean(compute='_compute_reax_sync')
+    reax_activity_count = fields.Integer(string='Activity records', compute='_compute_reax_sync',
+                                         readonly=True)
+    reax_activity_keep_days = fields.Integer(
+        string='Keep activity for (days)', default=0,
+        config_parameter='realestateapp.activity_keep_days',
+        help='0 keeps everything. Any other number is the minimum history Clear Activity Logs will '
+             'leave behind — set it if your company must retain a synchronisation audit trail.')
+
+    @api.depends_context('uid')
+    def _compute_reax_sync(self):
+        for record in self:
+            record.reax_sync_summary = ''
+            record.reax_sync_running = False
+            record.reax_activity_count = 0
+            try:
+                run = self.env['reax.sync.run'].sudo().search([], order='started_at desc', limit=1)
+                record.reax_activity_count = self.env['reax.sync.activity'].sudo().search_count([])
+                if not run:
+                    record.reax_sync_summary = _('Nothing has synchronised yet.')
+                    continue
+                record.reax_sync_running = run.state in ('queued', 'preparing', 'running', 'paused')
+                # Deliberately no ETA: a run parks between slices, so any rate taken from wall clock
+                # is fiction — it was 13x wrong on a measured run. Elapsed and "x of y" are true.
+                counted = ('{:,} of {:,}'.format(run.checked, run.total) if run.total
+                           else '{:,} processed'.format(run.checked))
+                record.reax_sync_summary = '\n'.join([
+                    run.doing or dict(run._fields['state'].selection).get(run.state, ''),
+                    '%s · %s created · %s updated · %s failed'
+                    % (counted, run.created, run.updated, run.failed),
+                    'Running for %s · started by %s' % (run.elapsed or '-', run.trigger or '-'),
+                ])
+            except Exception:      # noqa: BLE001
+                # A compute that raises takes down the WHOLE Settings page, for every app.
+                record.reax_sync_summary = _('Could not read the synchronisation history.')
+
+    def action_reax_open_syncs(self):
+        return self.env['ir.actions.act_window']._for_xml_id(
+            'realestateapp_connector.action_reax_sync_runs')
+
+    def action_reax_open_activity(self):
+        return self.env['ir.actions.act_window']._for_xml_id(
+            'realestateapp_connector.action_reax_sync_activity')
+
+    def action_reax_clear_activity(self):
+        """Clears the LOG. Not one property, contract, invoice, cheque or contact is touched."""
+        return self.env['reax.sync.activity'].action_reax_clear_activity()
+
     def get_values(self):
         """Read the nineteen switches from the parameters rather than from Odoo's config_parameter
         plumbing, which cannot store an explicit "off" — see reax_nav._enabled."""
