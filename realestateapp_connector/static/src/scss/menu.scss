@@ -21,7 +21,9 @@
 //    on a click this rule stops matching and the section opens normally, so the interaction is
 //    untouched: only the disagreement is resolved, and in the direction the theme itself intended.
 .header-sub-menus li:has(> p > a[data-menu-xmlid^='realestateapp_connector.']) {
-  > p > a.collapsed + *,
+  // The panel is the <p>'s next sibling, not the <a>'s: inside that <p> the anchor is alone, so a
+  // rule written against `a.collapsed + *` matches nothing at all. It was in the first version of
+  // this file and did exactly nothing, which is worse than being absent — it read like it worked.
   > p:has(> a.collapsed) + .collapse.show {
     display: none;
   }
