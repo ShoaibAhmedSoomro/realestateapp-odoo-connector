@@ -34,15 +34,15 @@ The listing assets are done, and rendered from the app's OWN brand files rather 
 | File | Source |
 |---|---|
 | `static/description/icon.png` (140×140) | `public/brand/osool/appicon.svg`, rasterised with sharp |
-| `static/description/banner.png` (1200×600) | `public/brand/osool/logo-mono-white.svg` (all white) on crimson `#e11d48` |
-| `static/description/index.html` | palette from `src/styles/global.css` — `#e11d48` / `#e81a47` / `#1d0e7f` |
+| `static/description/banner.png` (1200×600) | `public/brand/osool/logo-mono-white.svg` (all white) on the guideline's cover gradient `#231F20` → `#356F61` |
+| `static/description/index.html` | palette from `src/styles/global.css` — Osool green `#356F61`, Osool dark `#231F20` |
 
 Both are rendered by `scripts/build-odoo-listing.ts` in the app repo — run it after replacing the files in
 `public/brand/osool/`. The platform is Osool App; `/brand/REA-*` is the RealEstateApp company's own logo and is
 no longer the connector's source.
 
 The banner uses the ALL-WHITE logo — the brand guideline's own treatment on a coloured ground. The
-platform's coloured mark is a crimson gradient, which on a crimson banner would render as an invisible
+platform's coloured mark is a dark-to-green gradient, which on the dark-to-green cover would render as an invisible
 sliver. If the branding changes, regenerate rather than editing pixels.
 
 The repository is **public**, so Odoo's builder can read it with no extra authorisation. If it is ever made

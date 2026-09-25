@@ -3,26 +3,26 @@
 // Loaded into web.assets_web_dark, which already includes web.assets_backend, so settings.scss has run
 // and only the tokens need redefining. Same scope rule applies: nothing here may escape the block.
 //
-// These are Osool App's own dark tokens (src/styles/global.css, .dark), not a naive inversion. The
-// crimson is lifted and the indigo brightened, because both are unreadable at full saturation on a dark
-// ground — which is the usual way a "dark mode" ends up shipped broken.
+// These are Osool App's own dark tokens (src/styles/global.css, .dark), not a naive inversion. The Osool
+// green is lifted for text and rings, because at full depth it is unreadable on a dark ground — which is
+// the usual way a "dark mode" ends up shipped broken.
 
 $reax: ".app_settings_block[data-key='realestateapp_connector']";
 
 #{$reax} {
-  --reax-primary:      #f2547d;   // crimson lifted for a dark ground
-  --reax-primary-dark: #e11d48;
-  --reax-on-primary:   #1a0b12;
-  --reax-select:       #a99cff;   // indigo brightened
-  --reax-brand:        #ff6b8a;
-  --reax-ink:          #ecebf8;
-  --reax-muted:        #9a9ab4;
-  --reax-card:         #1a1a26;
-  --reax-border:       #2b2b3a;
-  --reax-field:        #21212e;
+  --reax-primary:      #6ca697;   // Osool green lifted for a dark ground
+  --reax-primary-dark: #478072;
+  --reax-on-primary:   #0b1a16;
+  --reax-select:       #6ca697;   // lifted Osool green
+  --reax-brand:        #6ca697;
+  --reax-ink:          #e8efed;
+  --reax-muted:        #94a49f;
+  --reax-card:         #151d1b;
+  --reax-border:       #252f2c;
+  --reax-field:        #1c2522;
   --reax-success:      #4fd3a0;
   --reax-warning:      #e3a85b;
-  --reax-danger:       #ff7a96;
+  --reax-danger:       #f0503c;   // the app's dark --destructive
   --reax-shadow:       0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px -12px rgba(0, 0, 0, .6);
   --reax-shadow-btn:   0 6px 16px -6px rgba(0, 0, 0, .7);
 

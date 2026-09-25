@@ -14,14 +14,14 @@ import { useService } from "@web/core/utils/hooks";
 import { loadBundle, loadJS } from "@web/core/assets";
 
 // The app's palette (src/styles/global.css literals, same as settings.scss).
-const INK = "#141326";
-const MUTED = "#5a6076";
-const INDIGO = "#1d0e7f";
-const CRIMSON = "#e11d48";
+const INK = "#231f20";
+const MUTED = "#566560";
+const DEEP = "#231f20";   // the Osool dark
+const PRIMARY = "#356f61";   // Osool green
 const GREEN = "#0e9f6e";
 const AMBER = "#c27803";
 const RED = "#e02424";
-const WHEEL = [INDIGO, CRIMSON, GREEN, AMBER, "#6366f1", "#0ea5e9", "#a855f7", "#64748b"];
+const WHEEL = [DEEP, PRIMARY, GREEN, AMBER, "#6366f1", "#0ea5e9", "#a855f7", "#64748b"];
 
 const nf = new Intl.NumberFormat("en-US");
 const nf2 = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -206,7 +206,7 @@ export class ReaxDashboard extends Component {
             data: {
                 labels: months.map((m) => this.monthLabel(m.month)),
                 datasets: [
-                    { label: "Invoiced", data: months.map((m) => m.invoiced), backgroundColor: INDIGO, borderRadius: 5, maxBarThickness: 26 },
+                    { label: "Invoiced", data: months.map((m) => m.invoiced), backgroundColor: DEEP, borderRadius: 5, maxBarThickness: 26 },
                     { label: "Collected", data: months.map((m) => m.collected), backgroundColor: GREEN, borderRadius: 5, maxBarThickness: 26 },
                 ],
             },
@@ -249,7 +249,7 @@ export class ReaxDashboard extends Component {
             type: "bar",
             data: {
                 labels: leads.map((r) => r.label),
-                datasets: [{ label: "Leads", data: leads.map((r) => r.value), backgroundColor: CRIMSON, borderRadius: 5, maxBarThickness: 18 }],
+                datasets: [{ label: "Leads", data: leads.map((r) => r.value), backgroundColor: PRIMARY, borderRadius: 5, maxBarThickness: 18 }],
             },
             options: {
                 ...base,

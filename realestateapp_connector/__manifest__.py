@@ -78,7 +78,7 @@ Developed by Shoaib Ahmed — Developer (ASICO), for ASICO Property Management.
     },
     # The cover image apps.odoo.com shows on the listing. Both this and static/description/icon.png are
     # rendered by scripts/build-odoo-listing.ts from the platform's brand files (public/brand/osool/) in the
-    # Osool App repo, in the palette from its global.css — crimson #e11d48, accent #e81a47, indigo #1d0e7f.
+    # Osool App repo, in the palette from its global.css — Osool green #356F61 and Osool dark #231F20.
     'images': ['static/description/banner.png'],
     'installable': True,
     'application': True,

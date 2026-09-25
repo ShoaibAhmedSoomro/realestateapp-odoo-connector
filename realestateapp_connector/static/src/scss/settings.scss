@@ -19,23 +19,23 @@ $reax-tab: ".settings_tab .tab[data-key='realestateapp_connector']";
 
 #{$reax} {
   // ---- tokens, straight from the app -------------------------------------------------------------
-  --reax-primary:      #e11d48;   // crimson, the app's primary
-  --reax-primary-dark: #cb1a41;   // primary at 90%, pre-resolved for :hover
+  --reax-primary:      #356f61;   // Osool green, the app's primary
+  --reax-primary-dark: #306457;   // Osool green at 90%, pre-resolved for :hover
   --reax-on-primary:   #ffffff;
-  --reax-select:       #1d0e7f;   // indigo — selection, active, focus ring
-  --reax-brand:        #e81a47;   // pink accent — links, highlights
-  --reax-ink:          #141326;
-  --reax-muted:        #5a6076;
+  --reax-select:       #231f20;   // the Osool dark — selection, active
+  --reax-brand:        #356f61;   // Osool green — links, highlights
+  --reax-ink:          #231f20;
+  --reax-muted:        #566560;
   --reax-card:         #ffffff;
-  --reax-border:       #e7eaf3;
+  --reax-border:       #e6ecea;
   --reax-field:        #f4f6fb;
   --reax-success:      #0e9f6e;
   --reax-warning:      #c27803;
   --reax-danger:       #e02424;
   --reax-radius:       0.85rem;   // app --radius; inner controls use calc(- 2px)
   --reax-panel-radius: 24px;      // rounded-3xl — the app's real card radius
-  --reax-shadow:       0 1px 2px -1px rgba(20, 19, 38, .09), 0 2px 6px -2px rgba(20, 19, 38, .07);
-  --reax-shadow-btn:   0 6px 16px -6px rgba(25, 18, 72, .42);
+  --reax-shadow:       0 1px 2px -1px rgba(35, 31, 32, .09), 0 2px 6px -2px rgba(35, 31, 32, .07);
+  --reax-shadow-btn:   0 6px 16px -6px rgba(53, 111, 97, .38);
 
   color: var(--reax-ink);
 
@@ -146,7 +146,7 @@ $reax-tab: ".settings_tab .tab[data-key='realestateapp_connector']";
 
     &:focus {
       border-color: var(--reax-select);
-      box-shadow: 0 0 0 3px rgba(29, 14, 127, .12);
+      box-shadow: 0 0 0 3px rgba(53, 111, 97, .12);
     }
   }
 
@@ -191,7 +191,7 @@ $reax-tab: ".settings_tab .tab[data-key='realestateapp_connector']";
 // The entry in the settings sidebar — give it the brand colour when it is the selected app.
 #{$reax-tab} {
   &.selected {
-    color: var(--reax-primary, #e11d48);
-    border-color: var(--reax-primary, #e11d48);
+    color: var(--reax-primary, #356f61);
+    border-color: var(--reax-primary, #356f61);
   }
 }
