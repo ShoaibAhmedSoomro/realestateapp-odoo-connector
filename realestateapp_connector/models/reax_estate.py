@@ -5,7 +5,7 @@ The connector's first release showed only what already had a home in Odoo's own 
 and invoices. Properties, units and tenancy contracts had nowhere to land, so "connect all modules"
 stopped two menus in. These models are that home.
 
-They are REFERENCE data, deliberately thin: RealEstateApp is the system of record and the sync
+They are REFERENCE data, deliberately thin: Osool App is the system of record and the sync
 overwrites these rows on every run. Odoo-side edits of estate structure would be overwritten and are
 not the point — the point is that a contract here links to the REAL res.partner Odoo can invoice, to
 the property, and (through the stamp convention) back to the app record it mirrors. Money still
@@ -14,7 +14,7 @@ lives in account.move, never in a silo (see the connector README for why).
 from odoo import api, fields, models
 
 # Vocabulary fields come in pairs during the changeover: the original Char (what older copies of
-# RealEstateApp still write, and what existing rows already hold) and a Many2one to reax.option that
+# Osool App still write, and what existing rows already hold) and a Many2one to reax.option that
 # gives Odoo a real dropdown. The sync fills whichever this Odoo has, so an app and an addon of
 # different ages keep working. The Char columns go in a later release, once every connected app is
 # sending ids.
@@ -22,13 +22,13 @@ def _opt(category, string):
     return fields.Many2one(
         'reax.option', string=string, index=True, ondelete='restrict',
         domain=[('category', '=', category)],
-        help='Chosen from the list RealEstateApp maintains.')
+        help='Chosen from the list Osool App maintains.')
 
 
 
 class ReaxProperty(models.Model):
     _name = 'reax.property'
-    _description = 'RealEstateApp Property'
+    _description = 'Osool App Property'
     _order = 'name'
     _rec_name = 'name'
 
@@ -66,7 +66,7 @@ class ReaxProperty(models.Model):
 
 class ReaxUnit(models.Model):
     _name = 'reax.unit'
-    _description = 'RealEstateApp Unit'
+    _description = 'Osool App Unit'
     _order = 'property_id, name'
     _rec_name = 'name'
 
@@ -90,7 +90,7 @@ class ReaxUnit(models.Model):
 
 class ReaxContract(models.Model):
     _name = 'reax.contract'
-    _description = 'RealEstateApp Tenancy Contract'
+    _description = 'Osool App Tenancy Contract'
     _order = 'lease_start desc'
     _rec_name = 'name'
 

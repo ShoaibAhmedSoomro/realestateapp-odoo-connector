@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """WHAT THE CONNECTOR IS DOING, AND WHAT IT HAS DONE — inside Odoo.
 
-The synchronisation engine does not run here. It runs in RealEstateApp, against its own Postgres,
+The synchronisation engine does not run here. It runs in Osool App, against its own Postgres,
 and Odoo holds no credential to call it: enrolment sends Odoo's API key TO the app, so the app can
 read this Odoo, and nothing comes back the other way. Odoo therefore cannot fetch progress.
 
@@ -42,7 +42,7 @@ RUN_STATES = [
 
 class ReaxSyncRun(models.Model):
     _name = 'reax.sync.run'
-    _description = 'RealEstateApp synchronisation'
+    _description = 'Osool App synchronisation'
     _order = 'started_at desc, id desc'
     _rec_name = 'display_title'
 
@@ -52,9 +52,9 @@ class ReaxSyncRun(models.Model):
     display_title = fields.Char(compute='_compute_display_title', store=True)
     state = fields.Selection(RUN_STATES, string='Status', default='queued', index=True)
     trigger = fields.Char(string='Started by', help='What started this run: by hand, the schedule, '
-                                                    'a retry, or a change in RealEstateApp.')
+                                                    'a retry, or a change in Osool App.')
     direction = fields.Selection(
-        [('push', 'RealEstateApp → Odoo'), ('pull', 'Odoo → RealEstateApp'), ('both', 'Both ways')],
+        [('push', 'Osool App → Odoo'), ('pull', 'Odoo → Osool App'), ('both', 'Both ways')],
         string='Direction')
 
     started_at = fields.Datetime(string='Started', index=True)
@@ -138,15 +138,15 @@ class ReaxSyncRun(models.Model):
 
 class ReaxSyncRunLine(models.Model):
     _name = 'reax.sync.run.line'
-    _description = 'RealEstateApp synchronisation, one module'
+    _description = 'Osool App synchronisation, one module'
     _order = 'run_id, sequence, id'
 
     run_id = fields.Many2one('reax.sync.run', required=True, ondelete='cascade', index=True)
     sequence = fields.Integer(default=10)
-    module = fields.Char(required=True, help='The data set, as RealEstateApp names it.')
+    module = fields.Char(required=True, help='The data set, as Osool App names it.')
     module_label = fields.Char(compute='_compute_labels', store=True)
     direction = fields.Selection(
-        [('push', 'RealEstateApp → Odoo'), ('pull', 'Odoo → RealEstateApp')], string='Direction')
+        [('push', 'Osool App → Odoo'), ('pull', 'Odoo → Osool App')], string='Direction')
     state = fields.Selection(
         [('waiting', 'Waiting'), ('running', 'Syncing'), ('done', 'Done')],
         default='waiting', string='Status')
@@ -187,7 +187,7 @@ class ReaxSyncRunLine(models.Model):
 
 class ReaxSyncActivity(models.Model):
     _name = 'reax.sync.activity'
-    _description = 'RealEstateApp synchronisation activity'
+    _description = 'Osool App synchronisation activity'
     _order = 'occurred_at desc, id desc'
     _rec_name = 'record_name'
 
@@ -196,7 +196,7 @@ class ReaxSyncActivity(models.Model):
     module = fields.Char(string='Module', index=True)
     module_label = fields.Char(compute='_compute_module_label', store=True, string='Module')
     direction = fields.Selection(
-        [('push', 'RealEstateApp → Odoo'), ('pull', 'Odoo → RealEstateApp')],
+        [('push', 'Osool App → Odoo'), ('pull', 'Odoo → Osool App')],
         string='Direction', index=True)
     operation = fields.Selection(
         [('created', 'Created'), ('updated', 'Updated'), ('failed', 'Failed'),
@@ -205,7 +205,7 @@ class ReaxSyncActivity(models.Model):
     status = fields.Selection(
         [('ok', 'Successful'), ('error', 'Failed')], string='Result', index=True)
     record_name = fields.Char(string='Record')
-    record_ref = fields.Char(string='RealEstateApp id')
+    record_ref = fields.Char(string='Osool App id')
     external_ref = fields.Char(string='Odoo id')
     trigger = fields.Char(string='Started by')
     message = fields.Text(string='Detail')
@@ -218,7 +218,7 @@ class ReaxSyncActivity(models.Model):
     # ---- clearing the history -----------------------------------------------------------------
     #
     # This removes the LOG and nothing else. Not one property, contract, invoice, cheque or contact
-    # is touched by it, in Odoo or in RealEstateApp — these rows are a record OF work, never the
+    # is touched by it, in Odoo or in Osool App — these rows are a record OF work, never the
     # work. Said plainly on the button too, because "clear" next to a synchronisation screen is
     # exactly the word that makes somebody hesitate about their data.
     @api.model
@@ -243,14 +243,14 @@ class ReaxSyncActivity(models.Model):
             'params': {
                 'type': 'success' if n else 'info',
                 'title': 'Activity history cleared',
-                'message': msg + ' No RealEstateApp or Odoo records were changed.',
+                'message': msg + ' No Osool App or Odoo records were changed.',
                 'next': {'type': 'ir.actions.act_window_close'},
             },
         }
 
     @api.model
     def reax_record_activity(self, rows):
-        """Where RealEstateApp writes its activity. One call carries many rows.
+        """Where Osool App writes its activity. One call carries many rows.
 
         Batched on purpose: a call into Odoo costs about a third of a second whatever it carries, so
         logging record by record would roughly double the time a sync takes. A slice sends its whole

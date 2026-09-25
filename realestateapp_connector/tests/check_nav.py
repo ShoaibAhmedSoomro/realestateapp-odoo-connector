@@ -4,7 +4,7 @@
     python realestateapp_connector/tests/check_nav.py
 
 Runnable without Odoo, on purpose: the bug it guards was in a one-line truth test, it hid all
-nineteen RealEstateApp menus on a live install, and nothing short of running it would have shown
+nineteen Osool App menus on a live install, and nothing short of running it would have shown
 that — the docstring above the line said the opposite of what the line did.
 """
 import os

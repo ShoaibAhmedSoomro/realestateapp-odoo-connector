@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'RealEstateApp Connector',
-    'version': '18.0.6.5.3',
-    'summary': 'Connect this Odoo to RealEstateApp in one click — no API keys to copy by hand.',
+    'name': 'Osool Odoo Connector',
+    'version': '18.0.6.6.0',
+    'summary': 'Connect this Odoo to Osool App in one click — no API keys to copy by hand.',
     'description': """
-RealEstateApp Connector
+Osool Odoo Connector
 =======================
 
-Connects your Odoo to RealEstateApp so your contacts and CRM leads flow into it.
+Connects your Odoo to Osool App so your contacts and CRM leads flow into it.
 
 Without this app, connecting means finding your database name, creating an API key, and copying four
 values across two browser tabs. This app already knows all of them, because it runs inside your Odoo.
 
 How it works
 ------------
-1. In RealEstateApp, open Connectors and press *Connect with the Odoo app*. You get a short code.
-2. In Odoo, open the *RealEstateApp* app (or *Settings → RealEstateApp*), paste the code, and press *Connect*.
+1. In Osool App, open Connectors and press *Connect with the Odoo app*. You get a short code.
+2. In Odoo, open the *Osool App* app (or *Settings → Osool Odoo Connector*), paste the code, and press *Connect*.
 
 That is the whole setup. The app creates its own API key, works out which of your apps it can read, and
-tells RealEstateApp where to find you. Nothing is stored anywhere until your Odoo has proved the key works.
+tells Osool App where to find you. Nothing is stored anywhere until your Odoo has proved the key works.
 
 What it sends
 -------------
@@ -77,8 +77,8 @@ Developed by Shoaib Ahmed — Developer (ASICO), for ASICO Property Management.
         ],
     },
     # The cover image apps.odoo.com shows on the listing. Both this and static/description/icon.png are
-    # rendered from the app's own brand files (public/brand/REA-appicon.svg and REA-logo-white.svg) in the
-    # RealEstateApp repo, in the palette from its global.css — crimson #e11d48, accent #e81a47, indigo #1d0e7f.
+    # rendered by scripts/build-odoo-listing.ts from the platform's brand files (public/brand/osool/) in the
+    # Osool App repo, in the palette from its global.css — crimson #e11d48, accent #e81a47, indigo #1d0e7f.
     'images': ['static/description/banner.png'],
     'installable': True,
     'application': True,

@@ -80,7 +80,7 @@
     <field name="view_mode">list,form</field>
     <field name="help" type="html">
       <p class="o_view_nocontent_smiling_face">No properties have arrived yet</p>
-      <p>Run a sync from RealEstateApp's Connectors screen with the Properties data set enabled.</p>
+      <p>Run a sync from Osool App's Connectors screen with the Properties data set enabled.</p>
     </field>
   </record>
 
@@ -126,7 +126,7 @@
     <field name="context">{'search_default_by_property': 1}</field>
     <field name="help" type="html">
       <p class="o_view_nocontent_smiling_face">No units have arrived yet</p>
-      <p>Run a sync from RealEstateApp's Connectors screen with the Units data set enabled.</p>
+      <p>Run a sync from Osool App's Connectors screen with the Units data set enabled.</p>
     </field>
   </record>
 
@@ -226,7 +226,7 @@
     <field name="search_view_id" ref="view_reax_contract_search"/>
     <field name="help" type="html">
       <p class="o_view_nocontent_smiling_face">No contracts have arrived yet</p>
-      <p>Run a sync from RealEstateApp's Connectors screen with the Contracts data set enabled.</p>
+      <p>Run a sync from Osool App's Connectors screen with the Contracts data set enabled.</p>
     </field>
   </record>
 </odoo>

@@ -13,8 +13,8 @@
     <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
     <field name="arch" type="xml">
       <xpath expr="//form" position="inside">
-        <app string="RealEstateApp" name="realestateapp_connector"
-             data-string="RealEstateApp"
+        <app string="Osool Odoo Connector" name="realestateapp_connector"
+             data-string="Osool Odoo Connector"
              logo="/realestateapp_connector/static/description/icon.png">
 
           <!-- The wordmark. Two images rather than one: the black logo vanishes on Odoo's dark backend,
@@ -22,15 +22,15 @@
                itself — it is an OWL component with declared props, and an undeclared one throws in debug
                mode and takes the entire Settings page down with it. -->
           <div class="reax-wordmark">
-            <img src="/realestateapp_connector/static/src/img/REA-logo-black.svg"
-                 alt="RealEstateApp" class="reax-logo-light"/>
-            <img src="/realestateapp_connector/static/src/img/REA-logo-white.svg"
-                 alt="RealEstateApp" class="reax-logo-dark"/>
+            <img src="/realestateapp_connector/static/src/img/osool-logo-black.svg"
+                 alt="Osool App" class="reax-logo-light"/>
+            <img src="/realestateapp_connector/static/src/img/osool-logo-white.svg"
+                 alt="Osool App" class="reax-logo-dark"/>
             <span class="reax-wordmark-sub">Property management for the UAE</span>
           </div>
 
           <block title="Connection" name="reax_connection">
-            <setting string="Status" help="Whether this Odoo is connected to RealEstateApp.">
+            <setting string="Status" help="Whether this Odoo is connected to Osool App.">
               <div class="content-group mt-2">
                 <div invisible="not reax_connected_at">
                   <span class="badge text-bg-success">Connected</span>
@@ -42,7 +42,7 @@
                 <div invisible="reax_connected_at">
                   <span class="badge text-bg-secondary">Not connected</span>
                   <p class="text-muted mt-2 mb-0">
-                    Open <b>Connectors</b> in RealEstateApp, choose Odoo, and press
+                    Open <b>Connectors</b> in Osool App, choose Odoo, and press
                     <b>Connect with the Odoo app</b> to get a pairing code.
                   </p>
                 </div>
@@ -50,7 +50,7 @@
             </setting>
 
             <setting string="Pairing code"
-                     help="From Connectors in RealEstateApp. Valid for 30 minutes, and can be used once.">
+                     help="From Connectors in Osool App. Valid for 30 minutes, and can be used once.">
               <field name="reax_pairing_code" placeholder="Paste the code here"/>
               <div class="mt-2">
                 <button name="action_reax_connect" type="object" string="Connect" class="btn-primary"
@@ -59,18 +59,18 @@
                         invisible="not reax_connected_at"/>
                 <button name="action_reax_disconnect" type="object" string="Disconnect" class="btn-link text-danger"
                         invisible="not reax_connected_at"
-                        confirm="This revokes the API key this app created. RealEstateApp will stop reading this Odoo immediately. Continue?"/>
+                        confirm="This revokes the API key this app created. Osool App will stop reading this Odoo immediately. Continue?"/>
               </div>
             </setting>
 
-            <setting string="RealEstateApp address"
-                     help="Only change this if you were given a different address for RealEstateApp.">
-              <field name="reax_endpoint" placeholder="https://www.dubailuxuryhomes.ae"/>
+            <setting string="Osool App address"
+                     help="Only change this if you were given a different address for Osool App.">
+              <field name="reax_endpoint" placeholder="https://osoolapp.ae"/>
             </setting>
           </block>
 
           <!--
-            WHICH SCREENS APPEAR UNDER REALESTATEAPP.
+            WHICH SCREENS APPEAR UNDER OSOOL APP.
 
             Grouped exactly as the menu is, so a person ticking boxes here recognises what they are
             looking at. Untick both Properties and Units and the whole Property Mgmt. section goes —
@@ -81,14 +81,14 @@
             groups, exactly as before; this decides what is offered. Both have to allow it.
           -->
           <block title="Modules" name="reax_modules"
-                 help="Choose which parts of RealEstateApp appear in this Odoo's menu.">
-            <setting string="Property Management" help="Tick the screens you want under RealEstateApp.">
+                 help="Choose which parts of Osool App appear in this Odoo's menu.">
+            <setting string="Property Management" help="Tick the screens you want under Osool App.">
               <div class="content-group mt-2">
                 <div><field name="reax_nav_properties" class="oe_inline"/> <span class="ms-1">Properties</span></div>
                 <div><field name="reax_nav_units" class="oe_inline"/> <span class="ms-1">Units</span></div>
               </div>
             </setting>
-            <setting string="Leasing" help="Tick the screens you want under RealEstateApp.">
+            <setting string="Leasing" help="Tick the screens you want under Osool App.">
               <div class="content-group mt-2">
                 <div><field name="reax_nav_leads" class="oe_inline"/> <span class="ms-1">Leads</span></div>
                 <div><field name="reax_nav_requests" class="oe_inline"/> <span class="ms-1">Leasing Requests</span></div>
@@ -97,13 +97,13 @@
                 <div><field name="reax_nav_renewals" class="oe_inline"/> <span class="ms-1">Renewals</span></div>
               </div>
             </setting>
-            <setting string="Accounts and Legal" help="Tick the screens you want under RealEstateApp.">
+            <setting string="Accounts and Legal" help="Tick the screens you want under Osool App.">
               <div class="content-group mt-2">
                 <div><field name="reax_nav_accounts" class="oe_inline"/> <span class="ms-1">Accounts</span></div>
                 <div><field name="reax_nav_legal" class="oe_inline"/> <span class="ms-1">Legal Cases</span></div>
               </div>
             </setting>
-            <setting string="Operations" help="Tick the screens you want under RealEstateApp.">
+            <setting string="Operations" help="Tick the screens you want under Osool App.">
               <div class="content-group mt-2">
                 <div><field name="reax_nav_maintenance" class="oe_inline"/> <span class="ms-1">Maintenance</span></div>
                 <div><field name="reax_nav_amc" class="oe_inline"/> <span class="ms-1">AMC Contracts</span></div>
@@ -111,7 +111,7 @@
                 <div><field name="reax_nav_inspections" class="oe_inline"/> <span class="ms-1">Inspections</span></div>
               </div>
             </setting>
-            <setting string="People" help="Tick the screens you want under RealEstateApp.">
+            <setting string="People" help="Tick the screens you want under Osool App.">
               <div class="content-group mt-2">
                 <div><field name="reax_nav_contacts" class="oe_inline"/> <span class="ms-1">Contacts</span></div>
                 <div><field name="reax_nav_tenants" class="oe_inline"/> <span class="ms-1">Tenants</span></div>
@@ -120,13 +120,13 @@
                 <div><field name="reax_nav_staff" class="oe_inline"/> <span class="ms-1">Staff</span></div>
               </div>
             </setting>
-            <setting string="Overview" help="Tick the screens you want under RealEstateApp.">
+            <setting string="Overview" help="Tick the screens you want under Osool App.">
               <div class="content-group mt-2">
                 <div><field name="reax_nav_dashboard" class="oe_inline"/> <span class="ms-1">Dashboard</span></div>
               </div>
             </setting>
             <setting string="Show everything again"
-                     help="Puts every RealEstateApp screen back in the menu.">
+                     help="Puts every Osool App screen back in the menu.">
               <button name="action_reax_nav_all" type="object" string="Enable all modules"
                       class="btn-secondary"/>
             </setting>
@@ -135,7 +135,7 @@
           <!--
             SYNCHRONISATION AND ACTIVITY, on the same page as everything else about the connection.
 
-            Both read from records RealEstateApp writes as it works — Odoo cannot ask the app for
+            Both read from records Osool App writes as it works — Odoo cannot ask the app for
             progress (no credential points that way), so the app tells Odoo. Nothing here animates:
             a figure that is not moving means the work is not moving.
           -->
@@ -180,7 +180,7 @@
             <setting string="Clear activity history">
               <button name="action_reax_clear_activity" type="object" string="Clear activity logs"
                       class="btn-secondary text-danger"
-                      confirm="You are about to permanently clear the synchronisation activity history. This will NOT delete or modify any RealEstateApp or Odoo data — no property, contract, invoice, cheque or contact is affected. Do you want to continue?"/>
+                      confirm="You are about to permanently clear the synchronisation activity history. This will NOT delete or modify any Osool App or Odoo data — no property, contract, invoice, cheque or contact is affected. Do you want to continue?"/>
               <p class="text-muted mt-2 mb-0">
                 This removes the log of what was synchronised. It never removes what was synchronised.
               </p>
@@ -211,7 +211,7 @@
             <setting help="Who built this app, and where to report a problem with it.">
               <div class="text-muted">
                 <div>Developed by <b>Shoaib Ahmed</b> — Developer (ASICO)</div>
-                <div class="mt-1">RealEstateApp Connector for Odoo 18 · ASICO Property Management</div>
+                <div class="mt-1">Osool Odoo Connector for Odoo 18 · ASICO Property Management</div>
               </div>
             </setting>
           </block>

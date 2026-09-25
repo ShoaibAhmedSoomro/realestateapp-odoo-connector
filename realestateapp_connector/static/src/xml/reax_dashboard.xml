@@ -7,10 +7,10 @@
 
       <div class="reax-head">
         <div>
-          <div class="reax-eyebrow">RealEstateApp</div>
+          <div class="reax-eyebrow">Osool App</div>
           <h1 class="reax-title">Overview</h1>
           <div class="reax-sub" t-if="state.data">
-            Live from RealEstateApp — every figure opens the exact list it counts. Refreshed <t t-esc="state.asofLabel"/>.
+            Live from Osool App — every figure opens the exact list it counts. Refreshed <t t-esc="state.asofLabel"/>.
           </div>
         </div>
         <button class="reax-refresh" t-on-click="refresh" t-att-disabled="state.refreshing">

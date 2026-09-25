@@ -1,6 +1,6 @@
 /** @odoo-module **/
 //
-// The RealEstateApp Overview — an OWL client action, not a form view: cards, charts and drill-downs
+// The Osool App Overview — an OWL client action, not a form view: cards, charts and drill-downs
 // in the app's own visual language. All figures arrive in ONE rpc (reax.dashboard.get_dashboard_data),
 // computed live server-side, and every card and chart segment opens the exact list it counted — the
 // drill-down methods on reax.dashboard are the single source of both the number and the list.

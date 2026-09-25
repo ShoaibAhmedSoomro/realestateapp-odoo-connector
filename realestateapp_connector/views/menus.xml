@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <!--
-    A top-level entry in Odoo's app grid, whose tree mirrors RealEstateApp's own navigation — the
+    A top-level entry in Odoo's app grid, whose tree mirrors Osool App's own navigation — the
     same group names, the same modules under them — so somebody who knows the app never has to learn
     a second geography:
 
@@ -18,7 +18,7 @@
     shortcuts work.
   -->
   <record id="action_reax_settings" model="ir.actions.act_window">
-    <field name="name">RealEstateApp</field>
+    <field name="name">Osool App</field>
     <field name="res_model">res.config.settings</field>
     <field name="view_mode">form</field>
     <field name="target">inline</field>
@@ -28,12 +28,12 @@
   <!-- web_icon points at the same icon.png the Apps Store listing uses, so the grid tile and the
        store tile are the one image rather than two that drift apart. -->
   <menuitem id="menu_reax_root"
-            name="RealEstateApp"
+            name="Osool App"
             web_icon="realestateapp_connector,static/description/icon.png"
             sequence="95"/>
 
   <!-- ═══ Dashboard ═══
-       First on purpose: Odoo lands on an app's first actionable menu, so opening RealEstateApp
+       First on purpose: Odoo lands on an app's first actionable menu, so opening Osool App
        opens the overview — same as the app itself. -->
   <menuitem id="menu_reax_dashboard" name="Dashboard" parent="menu_reax_root"
             action="action_reax_dashboard_client" sequence="5"/>

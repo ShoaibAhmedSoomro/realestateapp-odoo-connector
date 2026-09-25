@@ -4,7 +4,7 @@
     The app's dashboard, as Odoo's landing screen for this app.
 
     An OWL client action (static/src/js/reax_dashboard.js), not a form view: cards, charts and
-    drill-downs in RealEstateApp's own visual language. Data arrives in one rpc —
+    drill-downs in Osool App's own visual language. Data arrives in one rpc —
     reax.dashboard.get_dashboard_data — computed live on every open and every refresh, and every
     card and chart segment opens the exact list it counted, so the dashboard can never disagree
     with the menus.
@@ -13,7 +13,7 @@
     stat fields are computed, so the row itself stores nothing but a name.
   -->
   <record id="reax_dashboard_singleton" model="reax.dashboard">
-    <field name="name">RealEstateApp</field>
+    <field name="name">Osool App</field>
   </record>
 
   <record id="action_reax_dashboard_client" model="ir.actions.client">

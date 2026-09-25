@@ -25,23 +25,23 @@ from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
-# Where the enrolment is posted. Overridable because customers of a self-hosted RealEstateApp have their own
+# Where the enrolment is posted. Overridable because customers of a self-hosted Osool App have their own
 # address; this default is ASICO's own, which is the address every current installation uses.
-DEFAULT_ENDPOINT = 'https://www.dubailuxuryhomes.ae'
+DEFAULT_ENDPOINT = 'https://osoolapp.ae'
 TIMEOUT = 20
 
 PARAM_ENDPOINT = 'realestateapp.endpoint'
 PARAM_CONNECTED = 'realestateapp.connected_at'
 PARAM_ACCOUNT = 'realestateapp.account'
 
-# Every dataset RealEstateApp understands, and the Odoo models each one genuinely needs.
+# Every dataset Osool App understands, and the Odoo models each one genuinely needs.
 #
 # Declarative on purpose. The old version hardcoded 'contacts' and appended 'leads' if crm.lead existed,
 # which meant adding a dataset required editing three places and forgetting one of them was silent. Here a
 # dataset that names a model this database does not have simply does not appear — on the wire or on the
 # screen — rather than producing a connection that authenticates perfectly and then syncs nothing.
 #
-# The keys must match src/lib/connectors/registry.ts in RealEstateApp exactly. A key this side invents is
+# The keys must match src/lib/connectors/registry.ts in Osool App exactly. A key this side invents is
 # dropped by the enrolment route, which is the safe direction, but it will not sync and nobody is told why.
 #
 #   (key, direction, models that must ALL exist, the sentence a person reads on the screen)
@@ -61,23 +61,23 @@ REAX_DATASETS = (
     ('people', 'push', ('res.partner',),
      'Agents, facilitators and property administrators — sent to Odoo as contacts.'),
     # The rent schedule. Listed here so the settings page reports it like every other data set — it was
-    # added on the RealEstateApp side after this table was written and was the one push the Odoo end
+    # added on the Osool App side after this table was written and was the one push the Odoo end
     # never mentioned. account.move only exists where Accounting is installed, which _reax_present_models
     # already handles: absent, and the row simply is not offered.
     ('invoices', 'push', ('account.move',),
      'Rent schedule — each instalment sent as a customer invoice Odoo can post and reconcile.'),
     ('properties', 'push', ('reax.property',),
-     'Properties — the buildings, mirrored under RealEstateApp → Properties.'),
+     'Properties — the buildings, mirrored under Osool App → Properties.'),
     ('units', 'push', ('reax.unit',),
      'Units — every unit with its occupancy, linked to its building.'),
     ('contracts', 'push', ('reax.contract',),
      'Tenancy contracts — linked to the same contact the rent invoices are raised against.'),
     ('leads', 'push', ('reax.lead',),
-     'Leads — the pipeline, under RealEstateApp → Leasing.'),
+     'Leads — the pipeline, under Osool App → Leasing.'),
     ('leasing_requests', 'push', ('reax.leasing.request',),
-     'Leasing requests — under RealEstateApp → Leasing.'),
+     'Leasing requests — under Osool App → Leasing.'),
     ('bookings', 'push', ('reax.booking',),
-     'Bookings — under RealEstateApp → Leasing.'),
+     'Bookings — under Osool App → Leasing.'),
     ('renewals', 'push', ('reax.renewal',),
      'Renewals — linked to their contract.'),
     ('legal', 'push', ('reax.legal.case',),
@@ -97,14 +97,14 @@ class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
     reax_endpoint = fields.Char(
-        string='RealEstateApp address',
+        string='Osool App address',
         config_parameter=PARAM_ENDPOINT,
         default=DEFAULT_ENDPOINT,
         help='Leave this as it is unless you were given a different address.',
     )
     reax_pairing_code = fields.Char(
         string='Pairing code',
-        help='Copy this from Connectors in RealEstateApp. It is valid for 30 minutes and can be used once.',
+        help='Copy this from Connectors in Osool App. It is valid for 30 minutes and can be used once.',
     )
     # Read-only status, so somebody opening this screen can see where they stand without pressing anything.
     reax_connected_at = fields.Char(string='Connected', config_parameter=PARAM_CONNECTED, readonly=True)
@@ -113,68 +113,68 @@ class ResConfigSettings(models.TransientModel):
     # wire. A hand-written list drifts the first time somebody adds a dataset and forgets this file.
     reax_shares = fields.Text(string='What gets shared', compute='_compute_reax_shares', readonly=True)
 
-    # ---- which RealEstateApp modules appear in the menu ------------------------------------
+    # ---- which Osool App modules appear in the menu ------------------------------------
     # One checkbox per menu, stored as an ir.config_parameter so the choice outlives a restart
     # AND a module upgrade. See models/reax_nav.py for why the parameter, not the menu itself,
     # is the source of truth. Default True: a customer who never opens this screen sees the
     # whole app, which is the only safe default for a visibility switch.
     reax_nav_dashboard = fields.Boolean(
         string='Dashboard', default=True,
-        help='Show Dashboard in this Odoo’s RealEstateApp menu.')
+        help='Show Dashboard in this Odoo’s Osool App menu.')
     reax_nav_properties = fields.Boolean(
         string='Properties', default=True,
-        help='Show Properties in this Odoo’s RealEstateApp menu.')
+        help='Show Properties in this Odoo’s Osool App menu.')
     reax_nav_units = fields.Boolean(
         string='Units', default=True,
-        help='Show Units in this Odoo’s RealEstateApp menu.')
+        help='Show Units in this Odoo’s Osool App menu.')
     reax_nav_leads = fields.Boolean(
         string='Leads', default=True,
-        help='Show Leads in this Odoo’s RealEstateApp menu.')
+        help='Show Leads in this Odoo’s Osool App menu.')
     reax_nav_requests = fields.Boolean(
         string='Leasing Requests', default=True,
-        help='Show Leasing Requests in this Odoo’s RealEstateApp menu.')
+        help='Show Leasing Requests in this Odoo’s Osool App menu.')
     reax_nav_bookings = fields.Boolean(
         string='Bookings', default=True,
-        help='Show Bookings in this Odoo’s RealEstateApp menu.')
+        help='Show Bookings in this Odoo’s Osool App menu.')
     reax_nav_contracts = fields.Boolean(
         string='Contracts', default=True,
-        help='Show Contracts in this Odoo’s RealEstateApp menu.')
+        help='Show Contracts in this Odoo’s Osool App menu.')
     reax_nav_renewals = fields.Boolean(
         string='Renewals', default=True,
-        help='Show Renewals in this Odoo’s RealEstateApp menu.')
+        help='Show Renewals in this Odoo’s Osool App menu.')
     reax_nav_accounts = fields.Boolean(
         string='Accounts', default=True,
-        help='Show Accounts in this Odoo’s RealEstateApp menu.')
+        help='Show Accounts in this Odoo’s Osool App menu.')
     reax_nav_legal = fields.Boolean(
         string='Legal Cases', default=True,
-        help='Show Legal Cases in this Odoo’s RealEstateApp menu.')
+        help='Show Legal Cases in this Odoo’s Osool App menu.')
     reax_nav_maintenance = fields.Boolean(
         string='Maintenance', default=True,
-        help='Show Maintenance in this Odoo’s RealEstateApp menu.')
+        help='Show Maintenance in this Odoo’s Osool App menu.')
     reax_nav_amc = fields.Boolean(
         string='AMC Contracts', default=True,
-        help='Show AMC Contracts in this Odoo’s RealEstateApp menu.')
+        help='Show AMC Contracts in this Odoo’s Osool App menu.')
     reax_nav_assets = fields.Boolean(
         string='Assets', default=True,
-        help='Show Assets in this Odoo’s RealEstateApp menu.')
+        help='Show Assets in this Odoo’s Osool App menu.')
     reax_nav_inspections = fields.Boolean(
         string='Inspections', default=True,
-        help='Show Inspections in this Odoo’s RealEstateApp menu.')
+        help='Show Inspections in this Odoo’s Osool App menu.')
     reax_nav_contacts = fields.Boolean(
         string='Contacts', default=True,
-        help='Show Contacts in this Odoo’s RealEstateApp menu.')
+        help='Show Contacts in this Odoo’s Osool App menu.')
     reax_nav_tenants = fields.Boolean(
         string='Tenants', default=True,
-        help='Show Tenants in this Odoo’s RealEstateApp menu.')
+        help='Show Tenants in this Odoo’s Osool App menu.')
     reax_nav_landlords = fields.Boolean(
         string='Landlords', default=True,
-        help='Show Landlords in this Odoo’s RealEstateApp menu.')
+        help='Show Landlords in this Odoo’s Osool App menu.')
     reax_nav_vendors = fields.Boolean(
         string='Vendors', default=True,
-        help='Show Vendors in this Odoo’s RealEstateApp menu.')
+        help='Show Vendors in this Odoo’s Osool App menu.')
     reax_nav_staff = fields.Boolean(
         string='Staff', default=True,
-        help='Show Staff in this Odoo’s RealEstateApp menu.')
+        help='Show Staff in this Odoo’s Osool App menu.')
 
     # ---- what this instance can actually offer ----------------------------------------------------
     def _reax_present_models(self):
@@ -224,7 +224,7 @@ class ResConfigSettings(models.TransientModel):
         return offer
 
     def _reax_datasets(self):
-        """Kept as-is for compatibility: RealEstateApp builds before push support read only this list."""
+        """Kept as-is for compatibility: Osool App builds before push support read only this list."""
         return self._reax_offer()['pull']
 
     @api.depends_context('uid')
@@ -244,11 +244,11 @@ class ResConfigSettings(models.TransientModel):
     def _reax_base_url(self):
         url = (self.env['ir.config_parameter'].sudo().get_param('web.base.url') or '').strip().rstrip('/')
         if not url:
-            raise UserError(_('This Odoo has no web address configured, so RealEstateApp would not know '
+            raise UserError(_('This Odoo has no web address configured, so Osool App would not know '
                               'where to reach it. Set it under Settings → Technical → System Parameters '
                               '(web.base.url) and try again.'))
         if url.startswith('http://') and 'localhost' not in url and not url.startswith('http://127.'):
-            raise UserError(_('Your Odoo web address is not secure (%s). RealEstateApp will only connect '
+            raise UserError(_('Your Odoo web address is not secure (%s). Osool App will only connect '
                               'over https, because an API key travels on this connection.') % url)
         return url
 
@@ -257,7 +257,7 @@ class ResConfigSettings(models.TransientModel):
         self.ensure_one()
         code = (self.reax_pairing_code or '').strip()
         if not code:
-            raise UserError(_('Paste the pairing code from RealEstateApp first. You will find it under '
+            raise UserError(_('Paste the pairing code from Osool App first. You will find it under '
                               'Connectors → Odoo → Connect with the Odoo app.'))
 
         endpoint = (self.reax_endpoint or DEFAULT_ENDPOINT).strip().rstrip('/')
@@ -284,15 +284,15 @@ class ResConfigSettings(models.TransientModel):
         try:
             api_key = self.env['res.users.apikeys'].sudo()._generate('rpc', 'RealEstateApp connector', False)
         except Exception as exc:      # noqa: BLE001 — Odoo raises several types here
-            _logger.warning('RealEstateApp: could not generate an API key: %s', exc)
+            _logger.warning('Osool App: could not generate an API key: %s', exc)
             raise UserError(_('Odoo would not create an API key for your user. An administrator can allow '
                               'this, or you can create one by hand under My Profile → Account Security '
-                              'and connect from RealEstateApp instead.')) from exc
+                              'and connect from Osool App instead.')) from exc
 
-        # COMMIT before the wire. RealEstateApp proves the key by signing in with it the moment the
+        # COMMIT before the wire. Osool App proves the key by signing in with it the moment the
         # enrolment arrives — from its own connection, which cannot see a row this transaction has not
         # committed. Without this the handshake can only ever fail: the key exists for us and for nobody
-        # else, RealEstateApp answers "Odoo rejected the sign-in", the UserError below rolls the key back,
+        # else, Osool App answers "Odoo rejected the sign-in", the UserError below rolls the key back,
         # and every retry repeats the loop. cr.commit() mid-request is normally a smell; a side effect
         # that an outside party must observe before this transaction ends is the textbook exception.
         # The failure paths below now revoke the key explicitly, because after a commit an exception no
@@ -306,9 +306,9 @@ class ResConfigSettings(models.TransientModel):
                 ]).unlink()
                 self.env.cr.commit()
             except Exception:      # noqa: BLE001 — cleanup must never mask the real error
-                _logger.warning('RealEstateApp: could not discard the API key after a failed enrolment')
+                _logger.warning('Osool App: could not discard the API key after a failed enrolment')
 
-        # Both directions on the wire. `datasets` keeps its old meaning — the sets RealEstateApp READS from
+        # Both directions on the wire. `datasets` keeps its old meaning — the sets Osool App READS from
         # this Odoo — so an app build that predates push support is unaffected. `push_datasets` is additive:
         # an app that does not know the field ignores it, and an older module that never sends it must be
         # read as "none", never as "everything".
@@ -337,22 +337,22 @@ class ResConfigSettings(models.TransientModel):
             with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
                 body = json.loads(response.read().decode('utf-8') or '{}')
         except urllib.error.HTTPError as exc:
-            # RealEstateApp answers with a plain sentence for a person; show that rather than a status code.
+            # Osool App answers with a plain sentence for a person; show that rather than a status code.
             detail = ''
             try:
                 detail = json.loads(exc.read().decode('utf-8') or '{}').get('error') or ''
             except Exception:      # noqa: BLE001
                 pass
             _discard_key()
-            raise UserError(detail or _('RealEstateApp refused the connection (error %s).') % exc.code) from exc
+            raise UserError(detail or _('Osool App refused the connection (error %s).') % exc.code) from exc
         except urllib.error.URLError as exc:
             _discard_key()
-            raise UserError(_('Could not reach RealEstateApp at %s. Check the address and that this server '
+            raise UserError(_('Could not reach Osool App at %s. Check the address and that this server '
                               'can make outgoing connections.') % endpoint) from exc
 
         if not body.get('ok'):
             _discard_key()
-            raise UserError(body.get('error') or _('RealEstateApp did not confirm the connection.'))
+            raise UserError(body.get('error') or _('Osool App did not confirm the connection.'))
 
         params = self.env['ir.config_parameter'].sudo()
         params.set_param(PARAM_CONNECTED, fields.Datetime.to_string(fields.Datetime.now()))
@@ -370,7 +370,7 @@ class ResConfigSettings(models.TransientModel):
             'tag': 'display_notification',
             'params': {
                 'type': 'success',
-                'title': _('Connected to RealEstateApp'),
+                'title': _('Connected to Osool App'),
                 'message': _('Sharing: %s. You can disconnect here at any time.') % shared,
                 'next': {'type': 'ir.actions.act_window_close'},
             },
@@ -485,7 +485,7 @@ class ResConfigSettings(models.TransientModel):
             'params': {
                 'type': 'warning' if removed else 'info',
                 'title': _('Disconnected'),
-                'message': (_('%s API key(s) revoked. RealEstateApp can no longer read this Odoo.') % removed
+                'message': (_('%s API key(s) revoked. Osool App can no longer read this Odoo.') % removed
                             if removed else
                             _('There was no key from this app to revoke.')),
                 'next': {'type': 'ir.actions.act_window_close'},

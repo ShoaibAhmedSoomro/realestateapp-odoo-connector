@@ -3,7 +3,7 @@
   <!--
     THE PAYMENT SCHEDULE, ON THE CONTRACT.
 
-    Every charge RealEstateApp raised for this tenancy, in one list: rent instalment by instalment,
+    Every charge Osool App raised for this tenancy, in one list: rent instalment by instalment,
     and alongside them the security deposit, administration fee, commission and anything else the
     contract carries. They are the SAME account.move records Odoo posts and reconciles — nothing here
     is a copy, and opening a line opens the real invoice.

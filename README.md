@@ -1,4 +1,4 @@
-# RealEstateApp Connector — free Odoo app
+# Osool Odoo Connector — free Odoo app
 
 One-click enrolment for the Odoo connector. Free, LGPL-3, no paid tier.
 
@@ -22,13 +22,13 @@ and presses Connect.
 ## The flow
 
 ```
-RealEstateApp  →  Connectors → Odoo → Get a pairing code        (30 min, single use)
-Odoo           →  Settings → RealEstateApp → paste → Connect
+Osool App  →  Connectors → Odoo → Get a pairing code        (30 min, single use)
+Odoo           →  Settings → Osool Odoo Connector → paste → Connect
                      ├─ reads web.base.url, cr.dbname, env.user.login
                      ├─ checks ir.model for crm.lead → offers contacts [+ leads]
                      ├─ mints its own API key (sudo, persistent, scope 'rpc')
                      └─ POST /api/connectors/enroll/<code>
-RealEstateApp  →  authenticates against that Odoo for real, then stores it
+Osool App  →  authenticates against that Odoo for real, then stores it
 ```
 
 Nothing is marked connected on the module's word: the server proves the credentials against the customer's
@@ -58,8 +58,8 @@ The manual credential form stays in the product for exactly that reason. It is n
 
 1. Copy `realestateapp_connector/` into the instance's addons path.
 2. Restart Odoo, then Apps → Update Apps List.
-3. Search "RealEstateApp", press Install.
-4. Settings → RealEstateApp → paste the pairing code → Connect.
+3. Search "Osool Odoo Connector", press Install.
+4. Settings → Osool Odoo Connector → paste the pairing code → Connect.
 
 ## Odoo version support
 

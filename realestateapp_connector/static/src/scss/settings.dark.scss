@@ -1,9 +1,9 @@
-// RealEstateApp — dark-mode overrides for the settings block.
+// Osool App — dark-mode overrides for the settings block.
 //
 // Loaded into web.assets_web_dark, which already includes web.assets_backend, so settings.scss has run
 // and only the tokens need redefining. Same scope rule applies: nothing here may escape the block.
 //
-// These are RealEstateApp's own dark tokens (src/styles/global.css, .dark), not a naive inversion. The
+// These are Osool App's own dark tokens (src/styles/global.css, .dark), not a naive inversion. The
 // crimson is lifted and the indigo brightened, because both are unreadable at full saturation on a dark
 // ground — which is the usual way a "dark mode" ends up shipped broken.
 

@@ -23,7 +23,7 @@ class AccountMove(models.Model):
     reax_contract_id = fields.Many2one(
         'reax.contract', string='Tenancy Contract', index=True, ondelete='set null', copy=False,
         compute='_compute_reax_contract_id', store=True, readonly=False,
-        help='The RealEstateApp tenancy contract this instalment belongs to.')
+        help='The Osool App tenancy contract this instalment belongs to.')
 
 
     # THE WHOLE SCHEDULE, VISIBLE FROM ANY ONE OF ITS INVOICES.

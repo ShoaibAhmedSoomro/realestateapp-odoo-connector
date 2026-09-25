@@ -15,7 +15,7 @@
     The filter is the `comment` stamp the push writes ("Synced from RealEstateApp (tenant #12)"). That
     field was chosen over res.partner.category_id on purpose — tags would mean creating rows in a table
     nobody asked us to touch — and it is what makes these records identifiable from inside Odoo, since
-    the id mapping lives in RealEstateApp's own database and Odoo cannot query it.
+    the id mapping lives in Osool App's own database and Odoo cannot query it.
   -->
 
   <!-- mode="primary" so this extends the standard contact search for THIS action only. An ordinary
@@ -50,18 +50,18 @@
   </record>
 
   <record id="action_reax_partners" model="ir.actions.act_window">
-    <field name="name">Contacts from RealEstateApp</field>
+    <field name="name">Contacts from Osool App</field>
     <field name="res_model">res.partner</field>
     <field name="view_mode">kanban,list,form</field>
     <field name="search_view_id" ref="view_reax_partner_search"/>
     <field name="domain">[('comment', 'ilike', 'Synced from RealEstateApp (')]</field>
     <field name="context">{'default_customer_rank': 0, 'default_supplier_rank': 0}</field>
     <field name="help" type="html">
-      <p class="o_view_nocontent_smiling_face">Nothing has arrived from RealEstateApp yet</p>
+      <p class="o_view_nocontent_smiling_face">Nothing has arrived from Osool App yet</p>
       <p>
-        Tenants, landlords, vendors and staff appear here once RealEstateApp is connected and has run a
-        sync. Open <b>RealEstateApp &#8594; Connection</b> to check the connection, then start a sync from
-        the Connectors screen in RealEstateApp.
+        Tenants, landlords, vendors and staff appear here once Osool App is connected and has run a
+        sync. Open <b>Osool App &#8594; Connection</b> to check the connection, then start a sync from
+        the Connectors screen in Osool App.
       </p>
     </field>
   </record>

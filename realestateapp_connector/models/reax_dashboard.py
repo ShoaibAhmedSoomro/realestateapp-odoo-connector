@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""The overview — RealEstateApp's dashboard, inside Odoo.
+"""The overview — Osool App's dashboard, inside Odoo.
 
 One persisted singleton whose every field is COMPUTED at read time from the mirrored records
 themselves (reax.* and the stamped account.move rows), so the numbers can never disagree with the
@@ -23,9 +23,9 @@ INVOICE_DOMAIN = [('move_type', '=', 'out_invoice'),
 
 class ReaxDashboard(models.Model):
     _name = 'reax.dashboard'
-    _description = 'RealEstateApp Overview'
+    _description = 'Osool App Overview'
 
-    name = fields.Char(default='RealEstateApp', readonly=True)
+    name = fields.Char(default='Osool App', readonly=True)
     currency_id = fields.Many2one('res.currency', compute='_compute_stats')
 
     # ── the estate ──
@@ -111,7 +111,7 @@ class ReaxDashboard(models.Model):
     @api.model
     def get_dashboard_data(self):
         env = self.env
-        dash = self.sudo().search([], limit=1) or self.sudo().create({'name': 'RealEstateApp'})
+        dash = self.sudo().search([], limit=1) or self.sudo().create({'name': 'Osool App'})
         stats = dash.read([
             'properties_total', 'units_total', 'units_occupied', 'units_vacant', 'occupancy_pct',
             'leads_total', 'leads_won', 'requests_total', 'bookings_total', 'contracts_active',

@@ -7,7 +7,7 @@
     export all come with them, already familiar to anyone who uses Odoo — none of it hand-built, and
     none of it able to drift from what the records actually say.
 
-    Everything on these screens is written by RealEstateApp as the synchronisation runs. There is no
+    Everything on these screens is written by Osool App as the synchronisation runs. There is no
     animation anywhere: a bar that is not moving means the work is not moving.
   -->
 
@@ -98,7 +98,7 @@
                 </list>
               </field>
               <p class="text-muted mt-2">
-                A module with no Total has no count defined in RealEstateApp, so the number of
+                A module with no Total has no count defined in Osool App, so the number of
                 records is not known in advance — it shows what has been processed so far rather
                 than a percentage of a figure nobody has.
               </p>
@@ -142,7 +142,7 @@
     <field name="help" type="html">
       <p class="o_view_nocontent_smiling_face">No synchronisation has run yet</p>
       <p>
-        Each run RealEstateApp performs appears here while it happens and stays afterwards, with what
+        Each run Osool App performs appears here while it happens and stays afterwards, with what
         it processed and anything that failed. You can close this page — the work does not depend on
         it being open.
       </p>
@@ -164,7 +164,7 @@
                decoration-success="status == 'ok'" decoration-danger="status == 'error'"/>
         <field name="message" string="Detail" optional="show"/>
         <field name="trigger" string="Started by" optional="hide"/>
-        <field name="record_ref" string="RealEstateApp id" optional="hide"/>
+        <field name="record_ref" string="Osool App id" optional="hide"/>
         <field name="external_ref" string="Odoo id" optional="hide"/>
         <field name="run_id" optional="hide"/>
       </list>
@@ -188,8 +188,8 @@
         <filter name="updated" string="Updated" domain="[('operation','=','updated')]"/>
         <filter name="retried" string="Retried" domain="[('operation','=','retried')]"/>
         <separator/>
-        <filter name="to_odoo" string="RealEstateApp → Odoo" domain="[('direction','=','push')]"/>
-        <filter name="to_app" string="Odoo → RealEstateApp" domain="[('direction','=','pull')]"/>
+        <filter name="to_odoo" string="Osool App → Odoo" domain="[('direction','=','push')]"/>
+        <filter name="to_app" string="Odoo → Osool App" domain="[('direction','=','pull')]"/>
         <separator/>
         <filter name="today" string="Today"
                 domain="[('occurred_at','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
@@ -214,7 +214,7 @@
     <field name="help" type="html">
       <p class="o_view_nocontent_smiling_face">Nothing has been synchronised yet</p>
       <p>
-        Every record RealEstateApp creates, updates or fails to send appears here. Records that were
+        Every record Osool App creates, updates or fails to send appears here. Records that were
         already up to date are not listed — on a book of thirty thousand invoices almost every pass
         changes nothing, and logging that would bury what did happen.
       </p>

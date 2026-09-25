@@ -2,7 +2,7 @@
 
 ## This is one half of a feature
 
-The other half is the enrolment endpoint in the RealEstateApp application:
+The other half is the enrolment endpoint in the Osool App application:
 
 ```
 RealEstateApp-Astro/src/pages/api/connectors/enroll/[code].ts
@@ -33,11 +33,15 @@ The listing assets are done, and rendered from the app's OWN brand files rather 
 
 | File | Source |
 |---|---|
-| `static/description/icon.png` (140×140) | `public/brand/REA-appicon.svg`, rasterised with sharp |
-| `static/description/banner.png` (1200×600) | `REA-logo-white.svg` on crimson `#e11d48` |
+| `static/description/icon.png` (140×140) | `public/brand/osool/appicon.svg`, rasterised with sharp |
+| `static/description/banner.png` (1200×600) | `public/brand/osool/logo-white.svg` on crimson `#e11d48` |
 | `static/description/index.html` | palette from `src/styles/global.css` — `#e11d48` / `#e81a47` / `#1d0e7f` |
 
-The banner uses the wordmark WITHOUT the mark, deliberately: the mark in `REA-logo-white.svg` is a crimson
+Both are rendered by `scripts/build-odoo-listing.ts` in the app repo — run it after replacing the files in
+`public/brand/osool/`. The platform is Osool App; `/brand/REA-*` is the RealEstateApp company's own logo and is
+no longer the connector's source.
+
+The banner uses the wordmark WITHOUT the mark, deliberately: the mark in the wordmark files is a crimson
 gradient, so on a crimson banner it renders as an invisible sliver. The mark carries the icon instead. If the
 branding changes, regenerate rather than editing pixels.
 

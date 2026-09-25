@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """The payment schedule, ON the contract.
 
-A contract in RealEstateApp shows its instalments as one list — four rent instalments, or rent plus a
+A contract in Osool App shows its instalments as one list — four rent instalments, or rent plus a
 security deposit, an administration fee and a commission. Odoo held exactly the same information and
 could not show it that way: each instalment is its own customer invoice (which is right — they fall
 due on different dates, book to different accounts, and are paid by different cheques), so opening
@@ -24,7 +24,7 @@ class ReaxContract(models.Model):
     invoice_ids = fields.One2many(
         'account.move', 'reax_contract_id', string='Payment Schedule',
         domain=[('move_type', '=', 'out_invoice')],
-        help='Every charge RealEstateApp raised for this contract, as Odoo invoices.')
+        help='Every charge Osool App raised for this contract, as Odoo invoices.')
     invoice_count = fields.Integer(compute='_compute_invoice_totals', string='Instalments')
     invoice_total = fields.Monetary(compute='_compute_invoice_totals', string='Scheduled',
                                     currency_field='company_currency_id')

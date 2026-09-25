@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""WHICH REALESTATEAPP MODULES APPEAR IN THIS ODOO'S MENU.
+"""WHICH OSOOL APP MODULES APPEAR IN THIS ODOO'S MENU.
 
 Not every customer wants every part of the app inside Odoo. A firm that runs maintenance in another
 system does not want a Maintenance menu that mirrors it, and a menu nobody uses is a menu somebody
@@ -74,7 +74,7 @@ def nav_enabled(raw):
 class ReaxNav(models.AbstractModel):
     """The apply half, on its own so both the settings page and the registry hook can call it."""
     _name = 'reax.nav'
-    _description = 'RealEstateApp navigation visibility'
+    _description = 'Osool App navigation visibility'
 
     @api.model
     def _param(self, field):
@@ -121,7 +121,7 @@ class ReaxNav(models.AbstractModel):
             # in Odoo 18, so the hasattr this used to guard on could only ever be false — a branch
             # that read as a compatibility shim and was in fact dead code.
             self.env.registry.clear_cache()
-            _logger.info('RealEstateApp: navigation updated, %s menu(s) changed', changed)
+            _logger.info('Osool App: navigation updated, %s menu(s) changed', changed)
         return changed
 
     def _register_hook(self):
@@ -135,5 +135,5 @@ class ReaxNav(models.AbstractModel):
         try:
             self._apply()
         except Exception:      # noqa: BLE001
-            _logger.warning('RealEstateApp: could not apply navigation settings', exc_info=True)
+            _logger.warning('Osool App: could not apply navigation settings', exc_info=True)
         return super()._register_hook()

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """The working modules — leasing, legal, operations — mirrored the same way the estate is.
 
-Same contract as reax_estate.py: RealEstateApp is the system of record, the sync overwrites these
+Same contract as reax_estate.py: Osool App is the system of record, the sync overwrites these
 rows, and every link points at a record that is real on this side — a lead at its building, a
 renewal at its contract, a maintenance ticket at the unit's property. Odoo-side edits of these rows
 are not the workflow (the app's approval gates are); the value is that the whole business is
@@ -11,19 +11,19 @@ from odoo import fields, models
 
 
 # See models/reax_option.py for why these are records rather than Selection values. Each vocabulary
-# field keeps its original Char twin during the changeover so an older RealEstateApp — which still
+# field keeps its original Char twin during the changeover so an older Osool App — which still
 # sends plain text — does not break against a newer addon.
 def _opt(category, string):
     return fields.Many2one(
         'reax.option', string=string, index=True, ondelete='restrict',
         domain=[('category', '=', category)],
-        help='Chosen from the list RealEstateApp maintains.')
+        help='Chosen from the list Osool App maintains.')
 
 
 
 class ReaxLead(models.Model):
     _name = 'reax.lead'
-    _description = 'RealEstateApp Lead'
+    _description = 'Osool App Lead'
     _order = 'id desc'
 
     code = fields.Char(required=True, index=True)
@@ -51,7 +51,7 @@ class ReaxLead(models.Model):
 
 class ReaxLeasingRequest(models.Model):
     _name = 'reax.leasing.request'
-    _description = 'RealEstateApp Leasing Request'
+    _description = 'Osool App Leasing Request'
     _order = 'id desc'
     # Without this Odoo prints 'reax.booking,42' wherever a record is named — its fallback when a
     # model has neither a `name` field nor a _rec_name. The code is what people actually call these.
@@ -73,7 +73,7 @@ class ReaxLeasingRequest(models.Model):
 
 class ReaxBooking(models.Model):
     _name = 'reax.booking'
-    _description = 'RealEstateApp Booking'
+    _description = 'Osool App Booking'
     _order = 'id desc'
     # Without this Odoo prints 'reax.booking,42' wherever a record is named — its fallback when a
     # model has neither a `name` field nor a _rec_name. The code is what people actually call these.
@@ -92,7 +92,7 @@ class ReaxBooking(models.Model):
 
 class ReaxRenewal(models.Model):
     _name = 'reax.renewal'
-    _description = 'RealEstateApp Renewal'
+    _description = 'Osool App Renewal'
     _order = 'id desc'
     # Without this Odoo prints 'reax.booking,42' wherever a record is named — its fallback when a
     # model has neither a `name` field nor a _rec_name. The code is what people actually call these.
@@ -113,7 +113,7 @@ class ReaxRenewal(models.Model):
 
 class ReaxLegalCase(models.Model):
     _name = 'reax.legal.case'
-    _description = 'RealEstateApp Legal Case'
+    _description = 'Osool App Legal Case'
     _order = 'id desc'
 
     name = fields.Char(string='Case Ref', required=True, index=True)
@@ -135,7 +135,7 @@ class ReaxLegalCase(models.Model):
 
 class ReaxMaintenance(models.Model):
     _name = 'reax.maintenance'
-    _description = 'RealEstateApp Maintenance Ticket'
+    _description = 'Osool App Maintenance Ticket'
     _order = 'id desc'
     # Without this Odoo prints 'reax.booking,42' wherever a record is named — its fallback when a
     # model has neither a `name` field nor a _rec_name. The code is what people actually call these.
@@ -165,7 +165,7 @@ class ReaxMaintenance(models.Model):
 
 class ReaxAmc(models.Model):
     _name = 'reax.amc'
-    _description = 'RealEstateApp AMC Contract'
+    _description = 'Osool App AMC Contract'
     _order = 'end_date'
     # Without this Odoo prints 'reax.booking,42' wherever a record is named — its fallback when a
     # model has neither a `name` field nor a _rec_name. The code is what people actually call these.
@@ -187,7 +187,7 @@ class ReaxAmc(models.Model):
 
 class ReaxAsset(models.Model):
     _name = 'reax.asset'
-    _description = 'RealEstateApp Asset'
+    _description = 'Osool App Asset'
     _order = 'name'
 
     code = fields.Char(required=True, index=True)
@@ -208,7 +208,7 @@ class ReaxAsset(models.Model):
 
 class ReaxInspection(models.Model):
     _name = 'reax.inspection'
-    _description = 'RealEstateApp Move-In/Out Inspection'
+    _description = 'Osool App Move-In/Out Inspection'
     _order = 'id desc'
     # Without this Odoo prints 'reax.booking,42' wherever a record is named — its fallback when a
     # model has neither a `name` field nor a _rec_name. The code is what people actually call these.

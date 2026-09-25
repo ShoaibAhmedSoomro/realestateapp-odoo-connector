@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <!--
-    The lists behind every status and type dropdown. RealEstateApp fills these as it syncs, so this
+    The lists behind every status and type dropdown. Osool App fills these as it syncs, so this
     screen is normally read-only in spirit: it exists so somebody can SEE what a dropdown will offer,
     and give a value a friendlier label than the code the app stores.
 
@@ -43,7 +43,7 @@
     <field name="search_view_id" ref="view_reax_option_search"/>
     <field name="help" type="html">
       <p class="o_view_nocontent_smiling_face">No values yet</p>
-      <p>These fill in automatically as RealEstateApp syncs. Each one is a choice in a status or type dropdown.</p>
+      <p>These fill in automatically as Osool App syncs. Each one is a choice in a status or type dropdown.</p>
     </field>
   </record>
 

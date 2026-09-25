@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'RealEstateApp Connector — Accounting',
-    'version': '18.0.1.3.0',
-    'summary': 'The rent schedule RealEstateApp sends, on the contract that produced it.',
+    'name': 'Osool Odoo Connector — Accounting',
+    'version': '18.0.1.4.0',
+    'summary': 'The rent schedule Osool App sends, on the contract that produced it.',
     'description': """
-RealEstateApp Connector — Accounting
+Osool Odoo Connector — Accounting
 ====================================
 
-Adds a *Rent Invoices* menu to the RealEstateApp app, listing the customer invoices RealEstateApp has
+Adds a *Rent Invoices* menu to the Osool App app, listing the customer invoices Osool App has
 sent into this Odoo.
 
 Why this is a separate app

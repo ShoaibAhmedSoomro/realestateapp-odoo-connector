@@ -1,4 +1,4 @@
-// RealEstateApp — skin for this module's settings block.
+// Osool App — skin for this module's settings block.
 //
 // SCOPE RULE, non-negotiable. Every selector in this file begins with $reax or $reax-tab.
 // `.o_form_label`, `.btn`, `.badge`, `.row` and every Bootstrap utility are global to the whole Odoo
@@ -7,11 +7,11 @@
 //
 // WHAT THIS CANNOT DO. Odoo renders settings through its own framework: a two-column grid of
 // `.o_setting_box`, its own form widgets, its own sidebar. Those are not ours to replace, and fighting
-// them breaks on every Odoo upgrade. So this makes the block *read as RealEstateApp* — its palette, its
+// them breaks on every Odoo upgrade. So this makes the block *read as Osool App* — its palette, its
 // card, its type, its buttons — rather than pretending to be the app itself. A genuine app-shaped screen
 // would need an OWL client action instead of a settings block, which is a different and larger thing.
 //
-// Colours are literals copied from RealEstateApp's own tokens (src/styles/global.css). No color-mix():
+// Colours are literals copied from Osool App's own tokens (src/styles/global.css). No color-mix():
 // alphas are pre-resolved to rgba() so there is nothing to degrade and no @supports fallback to keep.
 
 $reax:     ".app_settings_block[data-key='realestateapp_connector']";
